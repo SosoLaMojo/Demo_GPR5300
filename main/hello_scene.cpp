@@ -159,7 +159,14 @@ namespace gl {
 
 	void HelloScene::OnEvent(SDL_Event& event)
 	{
-		//gl::Camera::ProcessMouseMovement();
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			const auto mouseState = SDL_GetMouseState(nullptr, nullptr);
+			if (mouseState & SDL_BUTTON(3))
+			{
+				camera_->ProcessMouseMovement(event.motion.xrel, event.motion.yrel, true);
+			}
+		}
 		if (event.type == SDL_KEYDOWN)
 		{
 			if (event.key.keysym.sym == SDLK_ESCAPE)
