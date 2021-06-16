@@ -1,0 +1,11 @@
+# Blender MTL File: 'Moon рабочий.blend'
+# Material Count: 1
+
+newmtl Moon.003
+# the diffuse texture map
+map_Kd Diffuse_Earth_2K.png
+map_Pr Bump_Earth_2K.png
+Ks 1.0 1.0 1.0
+Ns 64.0
+d 1.000000
+illum 2
