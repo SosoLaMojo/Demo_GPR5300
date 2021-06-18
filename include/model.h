@@ -4,6 +4,10 @@
 #include "mesh2.h"
 #include "material.h"
 #include <cassert>
+#include <chrono>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace gl
 {
@@ -12,7 +16,7 @@ namespace gl
 	public:
 		std::vector<Mesh> meshes;
 		std::vector<Material> materials;
-		
+
 		Model(const std::string& filename)
 		{
 			tinyobj::ObjReader reader;
@@ -23,14 +27,14 @@ namespace gl
 			auto& attrib = reader.GetAttrib();
 			auto& shapes = reader.GetShapes();
 			auto& materials = reader.GetMaterials();
-			for(const auto& material : materials)
+			for (const auto& material : materials)
 			{
 				ParseMaterial(material);
 			}
 			for (const auto& shape : shapes)
 			{
 				ParseMesh(shape, attrib);
-				
+
 			}
 		}
 	private:
@@ -81,5 +85,97 @@ namespace gl
 			meshes.emplace_back(vertices, indices, material_id);
 		}
 	};
-	
+
+	class Planet
+	{
+	public:
+		Planet() {}
+
+		Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 rotationAxis) :
+			rotationSpeedFactor_(rotationSpeedFactor),
+			rotationAxis_(rotationAxis)
+		{
+			model_ = std::make_unique<Model>(filepath);
+		}
+
+		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
+		{
+			SetModelMatrix(dt);
+
+			shader.SetMat4("inv_model", invModelMatrix_);
+			shader.SetMat4("model", modelMatrix_);
+
+			for (const auto& mesh : model_->meshes)
+			{
+				mesh.Bind();
+				const auto& material = model_->materials[mesh.material_index];
+				material.color_tex.Bind(0);
+				material.specular_tex.Bind(1);
+				shader.SetFloat("specular_pow", material.specular_pow);
+				shader.SetVec3("specular_vec", material.specular_vec);
+				glDrawElements(GL_TRIANGLES, mesh.nb_vertices, GL_UNSIGNED_INT, 0);
+			}
+		}
+
+		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt)
+		{
+			modelMatrix_ = glm::rotate(modelMatrix_, dt.count() * rotationSpeedFactor_, rotationAxis_); //rotate around themself
+
+			//TODO rotate around an object/position
+
+			invModelMatrix_ = glm::transpose(glm::inverse(modelMatrix_));
+		}
+
+		glm::vec3 GetPosition()
+		{
+			glm::vec3 scale;
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(modelMatrix_, scale, rotation, translation, skew, perspective);
+
+			return translation;
+		}
+
+		struct PlanetTransfom
+		{
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 scale;
+		};
+
+		PlanetTransfom GetTransform()
+		{
+			glm::vec3 scale;
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(modelMatrix_, scale, rotation, translation, skew, perspective);
+
+			PlanetTransfom result;
+			result.translation = translation;
+			result.scale = scale;
+			result.rotation = rotation;
+
+			return result;
+		}
+
+		void SetPosition(glm::vec3 position)
+		{
+			modelMatrix_ = glm::translate(modelMatrix_, glm::vec3(0.0f));
+			modelMatrix_ = glm::translate(modelMatrix_, position);
+		}
+
+	private:
+		float rotationSpeedFactor_ = 1.0f;
+		glm::vec3 rotationAxis_ = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		std::unique_ptr<Model> model_ = nullptr;
+
+		glm::mat4 modelMatrix_ = glm::mat4(1.0f);
+		glm::mat4 invModelMatrix_ = glm::mat4(1.0f);
+	};
+
 } // namespace gl
