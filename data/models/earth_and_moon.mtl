@@ -1,0 +1,26 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Earth.001
+map_Kd earth/Earth_Color.png
+map_Pr earth/Earth_Roughness.png
+//Ns 225.000000
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.800000 0.800000 0.800000
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Moon.003
+map_Kd moon/Diffuse_2K.png
+map_Ks moon/Specular_2K.png
+//Ns 900.000000
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.800000 0.800000 0.800000
+//Ks 1.000000 1.000000 1.000000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.450000
+d 1.000000
+illum 2

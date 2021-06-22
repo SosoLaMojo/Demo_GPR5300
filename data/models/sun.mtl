@@ -1,9 +1,9 @@
 # Blender MTL File: 'None'
 # Material Count: 1
 
-newmtl Mars.002
-map_Kd mars/Mars_Color.png
-map_Pr mars/Mars_Roughness.png
+newmtl Sun
+map_Kd sun/Sun_Color.png
+map_Pr sun/Sun_Roughness.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

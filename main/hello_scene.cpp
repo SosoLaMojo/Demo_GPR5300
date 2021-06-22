@@ -71,27 +71,60 @@ namespace gl {
 	void HelloScene::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
-		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 0.0f, 30.0f)); // Camera position
+		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 30.0f)); // Camera position
 		skybox_mesh_ = std::make_unique<MeshSkybox>();
 		frameBuffer_ = std::make_unique<FrameBuffer>();
 		std::string path = "../";
 
+		// TODO calculate rotate speed and position for each planets + axis rotation sun
 		//Planets
-		//index 0	
-		planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
-			0.5f,	//rotate speed
-			glm::vec3(0.43f, 1.0f, 0.0f))); // Axis rotation
+		//index 0
+		planets_.push_back(Planet(path + "data/models/sun.obj",
+			0.1f,	//rotate speed
+			glm::vec3(0.0f, 0.01f, 0.0f))); // Axis rotation
 		//index 1
-		planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
+		planets_.push_back(Planet(path + "data/models/mercure.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.03f, 1.0f, 0.0f))); // Axis rotation
+		//index 2
+		planets_.push_back(Planet(path + "data/models/venus.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.052f, 1.0f, 0.0f))); // Axis rotation
+		//index 3
+		planets_.push_back(Planet(path + "data/models/earth_and_moon.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.43f, 1.0f, 0.0f))); // Axis rotation
+		//index 4
+		planets_.push_back(Planet(path + "data/models/mars.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.44f, 1.0f, 0.0f))); // Axis rotation
+		//index 5
+		planets_.push_back(Planet(path + "data/models/jupiter.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.052f, 1.0f, 0.0f))); // Axis rotation
+		//index 6
+		planets_.push_back(Planet(path + "data/models/saturn.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.5f, -1.0f, 0.0f))); // Axis rotation
+		//index 7
+		planets_.push_back(Planet(path + "data/models/uranus.obj",
 			1.5f, //rotate speed
 			glm::vec3(7.11f, 1.0f, 0.0f))); // Axis rotation
-		////index 2
-		//planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
-		//	3.5f, //rotate speed
-		//	glm::vec3(1.0f, 0.0f, 0.0f))); // Axis rotation
+		//index 8
+		planets_.push_back(Planet(path + "data/models/neptune.obj",
+			1.5f, //rotate speed
+			glm::vec3(0.54f, 1.0f, 0.0f))); // Axis rotation
 
-		planets_[0].SetPosition(glm::vec3(0, 0, 0));
-		planets_[1].SetPosition(glm::vec3(-10, -10, -10));
+		planets_[0].SetPosition(glm::vec3(0, 0, 0)); // sun
+		planets_[1].SetPosition(glm::vec3(10, 0, 0)); // mercure
+		planets_[2].SetPosition(glm::vec3(14, 0, 0)); // venus
+		planets_[3].SetPosition(glm::vec3(18, 0, 0)); // earth and moon
+		planets_[4].SetPosition(glm::vec3(22, 0, 0)); // mars
+		planets_[5].SetPosition(glm::vec3(30, 0, 0)); // jupiter
+		planets_[6].SetPosition(glm::vec3(35, 0, 0)); // saturn
+		planets_[7].SetPosition(glm::vec3(40, 0, 0)); // uranus
+		planets_[8].SetPosition(glm::vec3(45, 0, 0)); // neptune
+		
 
 		// Shaders
 		shader_ = std::make_unique<Shader>(

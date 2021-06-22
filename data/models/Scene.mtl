@@ -2,19 +2,19 @@
 # Material Count: 3
 
 newmtl Moon.003
-map_Kd Moon/Diffuse_2K.png
-map_Ks Moon/Specular_2K.png
+map_Kd tests/Moon/Diffuse_2K.png
+map_Ks tests/Moon/Specular_2K.png
 d 1.000000
 illum 2
 
 newmtl Earth
-map_Kd Earth/Diffuse_Earth_2K.png
-map_Ks Earth/Specular_Earth_2K.png
+map_Kd tests/Earth/Diffuse_Earth_2K.png
+map_Ks tests/Earth/Specular_Earth_2K.png
 d 1.000000
 illum 2
 
 newmtl Mars
-map_Kd Mars/Diffuse_2K.png
-map_Ks Mars/Specular_2K.png
+map_Kd tests/Mars/Diffuse_2K.png
+map_Ks tests/Mars/Specular_2K.png
 d 1.000000
 illum 2
