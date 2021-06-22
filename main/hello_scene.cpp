@@ -27,7 +27,7 @@ namespace gl {
 		void DrawImGui() override;
 
 	protected:
-		void SetModelMatrix(seconds dt);
+		//void SetModelMatrix(seconds dt);
 		void SetViewMatrix(seconds dt);
 		void SetProjectionMatrix();
 		void IsError(const std::string& file, int line) const;
@@ -50,9 +50,7 @@ namespace gl {
 		std::unique_ptr<FrameBuffer> frameBuffer_ = nullptr;
 		std::vector<Planet> planets_;
 
-		//glm::mat4 model_ = glm::mat4(1.0f);
 		glm::mat4 view_ = glm::mat4(1.0f);
-		//glm::mat4 inv_model_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		glm::mat4 view = glm::mat4(1.0f);
 	};
@@ -82,21 +80,18 @@ namespace gl {
 		//index 0	
 		planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
 			0.5f,	//rotate speed
-			glm::vec3(0.0f, 1.0f, 0.0f))); // Axis rotation
-//index 1
+			glm::vec3(0.43f, 1.0f, 0.0f))); // Axis rotation
+		//index 1
 		planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
 			1.5f, //rotate speed
-			glm::vec3(0.0f, 0.1f, 0.0f))); // Axis rotation
-//index 2
-		planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
-			3.5f, //rotate speed
-			glm::vec3(1.0f, 0.0f, 0.0f))); // Axis rotation
+			glm::vec3(7.11f, 1.0f, 0.0f))); // Axis rotation
+		////index 2
+		//planets_.push_back(Planet(path + "data/models/MoonEarthAndMars.obj",
+		//	3.5f, //rotate speed
+		//	glm::vec3(1.0f, 0.0f, 0.0f))); // Axis rotation
 
-		planets_[0].SetPosition(glm::vec3(10, 10, 10));
+		planets_[0].SetPosition(glm::vec3(0, 0, 0));
 		planets_[1].SetPosition(glm::vec3(-10, -10, -10));
-
-		//model_obj_ = std::make_unique<Model>(
-		//	path + "data/models/MoonEarthAndMars.obj");
 
 		// Shaders
 		shader_ = std::make_unique<Shader>(
@@ -110,11 +105,7 @@ namespace gl {
 		frameBufferShader_ = std::make_unique<Shader>(
 			path + "data/shaders/hello_scene/frame_buffer.vert",
 			path + "data/shaders/hello_scene/frame_buffer.frag");
-
-		//glClearColor(0.7f, 0.8f, 0.9f, 1.0f);
 	}
-
-
 
 	void HelloScene::SetViewMatrix(seconds dt)
 	{
@@ -147,29 +138,17 @@ namespace gl {
 		delta_time_ = dt.count();
 		time_ += delta_time_;
 		SetViewMatrix(dt);
-		/*SetModelMatrix(dt);*/
 		SetProjectionMatrix();
 		SetUniformMatrix();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shader_->Use();
 		shader_->SetInt("Diffuse", 0);
 		shader_->SetInt("Specular", 1);
-		//shader_->SetMat4("view", view_);
-		std::cout << std::to_string(planets_[0].GetPosition().x) << ", " << std::to_string(planets_[0].GetPosition().y) << ", " << std::to_string(planets_[0].GetPosition().z) << "\n";
+		//std::cout << std::to_string(planets_[0].GetPosition().x) << ", " << std::to_string(planets_[0].GetPosition().y) << ", " << std::to_string(planets_[0].GetPosition().z) << "\n";
 		for (Planet& planet : planets_)
 		{
 			planet.Update(dt, *shader_);
 		}
-		/*for(const auto& mesh : model_obj_->meshes)
-		{
-			mesh.Bind();
-			const auto& material = model_obj_->materials[mesh.material_index];
-			material.color_tex.Bind(0);
-			material.specular_tex.Bind(1);
-			shader_->SetFloat("specular_pow", material.specular_pow);
-			shader_->SetVec3("specular_vec", material.specular_vec);
-			glDrawElements(GL_TRIANGLES, mesh.nb_vertices, GL_UNSIGNED_INT, 0);
-		}*/
 
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
@@ -183,22 +162,13 @@ namespace gl {
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// framebuffer
-		IsError(__FILE__, __LINE__);
 		frameBuffer_->UnBind();
-		IsError(__FILE__, __LINE__);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		IsError(__FILE__, __LINE__);
 		frameBufferShader_->Use();
-		IsError(__FILE__, __LINE__);
 		frameBufferShader_->SetInt("screenTexture", 0);
-		IsError(__FILE__, __LINE__);
 		glActiveTexture(GL_TEXTURE0);
-		IsError(__FILE__, __LINE__);
 		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
-		IsError(__FILE__, __LINE__);
-
 		frameBuffer_->Draw();
-		IsError(__FILE__, __LINE__);
 	}
 
 	void HelloScene::Destroy()
