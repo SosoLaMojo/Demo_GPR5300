@@ -14,6 +14,7 @@
 #include "shader.h"
 #include "mesh2.h"
 #include "model.h"
+//#include "instancied_asteroids.h"
 
 namespace gl {
 
@@ -71,7 +72,7 @@ namespace gl {
 	void HelloScene::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
-		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 30.0f)); // Camera position
+		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 50.0f)); // Camera position
 		skybox_mesh_ = std::make_unique<MeshSkybox>();
 		frameBuffer_ = std::make_unique<FrameBuffer>();
 		std::string path = "../";
@@ -80,40 +81,58 @@ namespace gl {
 		//Planets
 		//index 0
 		planets_.push_back(Planet(path + "data/models/sun.obj",
-			0.1f,	//rotate speed
-			glm::vec3(0.0f, 0.01f, 0.0f))); // Axis rotation
+			0.0f,	//rotate speed around point
+			glm::vec3(0.0f, 0.01f, 0.0f),// Axis rotation spin
+			glm::vec3(0.0f, 0.0f, 0.0f),// transVec movement planet World
+			0.1f));// speed spin
 		//index 1
 		planets_.push_back(Planet(path + "data/models/mercure.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.03f, 1.0f, 0.0f))); // Axis rotation
+			0.17f, //rotate speed around point
+			glm::vec3(0.03f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(10.0f, 0.0f, 0.0f),// transVec movement planet World
+			0.1f));// speed spin
 		//index 2
 		planets_.push_back(Planet(path + "data/models/venus.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.052f, 1.0f, 0.0f))); // Axis rotation
+			0.12f, //rotate speed around point
+			glm::vec3(0.052f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(14.0f, 0.0f, 0.0f),// transVec movement planet World
+			0.1f));// speed spin
 		//index 3
 		planets_.push_back(Planet(path + "data/models/earth_and_moon.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.43f, 1.0f, 0.0f))); // Axis rotation
+			0.1f, //rotate speed around point
+			glm::vec3(0.43f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(18.0f, 0.0f, 0.0f),// transVec movement planet World
+			0.1f));// speed spin
 		//index 4
 		planets_.push_back(Planet(path + "data/models/mars.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.44f, 1.0f, 0.0f))); // Axis rotation
+			0.08f, //rotate speed around point
+			glm::vec3(0.44f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(22.0f, 0.0f, 0.0f),// transVec movement planet World
+			1.5f));// speed spin
 		//index 5
 		planets_.push_back(Planet(path + "data/models/jupiter.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.052f, 1.0f, 0.0f))); // Axis rotation
+			0.04f, //rotate speed around point
+			glm::vec3(0.052f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(30.0f, 0.0f, 0.0f),// transVec movement planet World
+			1.5f));// speed spin
 		//index 6
 		planets_.push_back(Planet(path + "data/models/saturn.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.5f, -1.0f, 0.0f))); // Axis rotation
+			0.03f, //rotate speed around point
+			glm::vec3(0.5f, -1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(35.0f, 0.0f, 0.0f),// transVec movement planet World
+			1.5f));// speed spin
 		//index 7
 		planets_.push_back(Planet(path + "data/models/uranus.obj",
-			1.5f, //rotate speed
-			glm::vec3(7.11f, 1.0f, 0.0f))); // Axis rotation
+			0.02f, //rotate speed around point
+			glm::vec3(7.11f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(40.0f, 0.0f, 0.0f),// transVec movement planet World
+			1.5f));// speed spin
 		//index 8
 		planets_.push_back(Planet(path + "data/models/neptune.obj",
-			1.5f, //rotate speed
-			glm::vec3(0.54f, 1.0f, 0.0f))); // Axis rotation
+			0.01f, //rotate speed around point
+			glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
+			glm::vec3(45.0f, 0.0f, 0.0f),// transVec movement planet World
+			1.5f));// speed spin
 
 		planets_[0].SetPosition(glm::vec3(0, 0, 0)); // sun
 		planets_[1].SetPosition(glm::vec3(10, 0, 0)); // mercure
@@ -148,7 +167,7 @@ namespace gl {
 	void HelloScene::SetProjectionMatrix()
 	{
 		projection_ = glm::perspective(glm::radians(45.0f),
-			4.0f / 3.0f,
+			4.0f / 3.0f, // aspect ratio
 			0.1f,
 			100.f);
 	}
@@ -164,9 +183,7 @@ namespace gl {
 	void HelloScene::Update(seconds dt)
 	{
 		// FrameBuffer
-		IsError(__FILE__, __LINE__);
 		frameBuffer_->Bind();
-		IsError(__FILE__, __LINE__);
 		// Planets
 		delta_time_ = dt.count();
 		time_ += delta_time_;
@@ -183,6 +200,7 @@ namespace gl {
 			planet.Update(dt, *shader_);
 		}
 
+		// TODO mettre skybox en dernier
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
 		skybox_mesh_->Bind();

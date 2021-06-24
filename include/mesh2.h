@@ -218,15 +218,12 @@ namespace gl {
 		void Draw() const
 		{
 			glBindVertexArray(quadVAO_);
-			IsError(__FILE__, __LINE__);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
-			IsError(__FILE__, __LINE__);
 		}
 
 		void Bind() const
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, FBO_);
-			IsError(__FILE__, __LINE__);
 		}
 
 		void UnBind() const
@@ -247,6 +244,7 @@ namespace gl {
 			}
 		}
 	};
+	
 	class Mesh
 	{
 	private:

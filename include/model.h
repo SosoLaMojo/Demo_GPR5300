@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include<vector>
+#include <vector>
 #include "mesh2.h"
 #include "material.h"
 #include <cassert>
@@ -91,9 +91,11 @@ namespace gl
 	public:
 		Planet() {}
 
-		Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 rotationAxis) :
+		Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis, glm::vec3 transVec, float spinSpeedFactor) :
 			rotationSpeedFactor_(rotationSpeedFactor),
-			rotationAxis_(rotationAxis)
+			spinRotationAxis_(spinRotationAxis),
+			transVec_(transVec),
+			spinSpeedFactor_(spinSpeedFactor)
 		{
 			model_ = std::make_unique<Model>(filepath);
 		}
@@ -119,9 +121,13 @@ namespace gl
 
 		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt)
 		{
-			modelMatrix_ = glm::rotate(modelMatrix_, dt.count() * rotationSpeedFactor_, rotationAxis_); //rotate around themself
-
-			//TODO rotate around an object/position
+			delta_time_ = dt.count();
+			time_ += delta_time_;
+			
+			modelMatrix_ = glm::mat4(1.0f);
+			modelMatrix_ = glm::rotate(modelMatrix_, time_ * rotationSpeedFactor_, glm::vec3(0.0f, 1.0f, 0.0f)); // rotate around specific point
+			modelMatrix_ = glm::translate(modelMatrix_, transVec_);
+			modelMatrix_ = glm::rotate(modelMatrix_, time_ * spinSpeedFactor_, spinRotationAxis_); //rotate around themself
 
 			invModelMatrix_ = glm::transpose(glm::inverse(modelMatrix_));
 		}
@@ -169,13 +175,18 @@ namespace gl
 		}
 
 	private:
-		float rotationSpeedFactor_ = 1.0f;
-		glm::vec3 rotationAxis_ = glm::vec3(0.0f, 1.0f, 0.0f);
 
+		float time_ = 0.0f;
+		float delta_time_ = 0.0f;
+		float spinSpeedFactor_ = 1.0f; // speed spin
+		float rotationSpeedFactor_ = 1.0f; // speed rotate in world
 		std::unique_ptr<Model> model_ = nullptr;
 
+		glm::vec3 transVec_ = glm::vec3(0.0f, 0.0f, 0.0f); // transVec movement planet World
+		glm::vec3 spinRotationAxis_ = glm::vec3(0.0f, 1.0f, 0.0f); // Axis rotation spin 
 		glm::mat4 modelMatrix_ = glm::mat4(1.0f);
 		glm::mat4 invModelMatrix_ = glm::mat4(1.0f);
+		
 	};
 
 } // namespace gl
