@@ -4,6 +4,7 @@
 newmtl Venus.009
 map_Kd venus/Venus_Color.png
 map_Pr venus/Venus_Roughness.png
+map_Ks venus/Venus_Roughness.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

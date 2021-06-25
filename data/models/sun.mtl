@@ -4,6 +4,7 @@
 newmtl Sun
 map_Kd sun/Sun_Color.png
 map_Pr sun/Sun_Roughness.png
+map_Ks sun/Sun_Roughness.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

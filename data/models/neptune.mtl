@@ -4,6 +4,7 @@
 newmtl Neptune.005
 map_Kd neptune/Neptune_Color.png
 map_Pr neptune/Neptune_Roughness.png
+map_Ks neptune/Neptune_Roughness.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

@@ -1,4 +1,5 @@
 #pragma once
+#include <tiny_obj_loader.h>
 #include <string>
 #include <vector>
 #include "mesh2.h"
@@ -36,6 +37,10 @@ namespace gl
 				ParseMesh(shape, attrib);
 
 			}
+		}
+		Mesh GetMesh(unsigned int i)
+		{
+			return meshes[i];
 		}
 	private:
 		void ParseMaterial(const tinyobj::material_t& material)
@@ -168,11 +173,11 @@ namespace gl
 			return result;
 		}
 
-		void SetPosition(glm::vec3 position)
+		/*void SetPosition(glm::vec3 position)
 		{
 			modelMatrix_ = glm::translate(modelMatrix_, glm::vec3(0.0f));
 			modelMatrix_ = glm::translate(modelMatrix_, position);
-		}
+		}*/
 
 	private:
 

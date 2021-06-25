@@ -1,11 +1,8 @@
 #pragma once
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
 #include <string>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <iostream>
-#include "shader.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 
@@ -154,7 +151,7 @@ namespace gl {
 		unsigned int quadVBO_ = 0;
 
 	public:
-		FrameBuffer()
+		FrameBuffer(glm::vec2 windowSize)
 		{
 			float quadVertices[24] = {
 				-1.0f,  1.0f,  0.0f, 1.0f,
@@ -171,14 +168,14 @@ namespace gl {
 			// Generate texture
 			glGenTextures(1, &texColorBuffer_);
 			glBindTexture(GL_TEXTURE_2D, texColorBuffer_);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowSize.x, windowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer_, 0);
 			// RBO
 			glGenRenderbuffers(1, &RBO_);
 			glBindRenderbuffer(GL_RENDERBUFFER, RBO_);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1024, 720);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowSize.x, windowSize.y);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO_);
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			{
@@ -210,6 +207,7 @@ namespace gl {
 
 		}
 
+		
 		unsigned int GetColorBuffer()
 		{
 			return texColorBuffer_;
@@ -320,6 +318,11 @@ namespace gl {
 			glBindVertexArray(0);
 		}
 
+		unsigned int GetVao() const
+		{
+			return VAO_;
+		}
+		
 		void Bind() const
 		{
 			glBindVertexArray(VAO_);
