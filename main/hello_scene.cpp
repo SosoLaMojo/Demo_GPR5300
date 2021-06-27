@@ -11,11 +11,11 @@
 #include "camera.h"
 #include "texture.h"
 #include "shader.h"
-#include "mesh2.h"
 #include "model.h"
 #include "instancied_asteroids.h"
 #include "skybox.h"
 #include "planet.h"
+#include "framebuffer.h"
 
 namespace gl {
 
