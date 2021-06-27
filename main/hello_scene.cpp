@@ -14,6 +14,8 @@
 #include "mesh2.h"
 #include "model.h"
 #include "instancied_asteroids.h"
+#include "skybox.h"
+#include "planet.h"
 
 namespace gl {
 

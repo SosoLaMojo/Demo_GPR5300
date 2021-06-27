@@ -1,18 +1,12 @@
 #pragma once
 #include <string>
-//#include <glad/glad.h>
 #include <glm/glm.hpp>
-//#include <iostream>
 #include <vector>
-//#include "mesh2.h"
-#include "material.h"
 #include "shader.h"
 #include "model.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-//#include <cassert>
 #include <chrono>
-
 
 namespace gl {
 
@@ -72,6 +66,5 @@ namespace gl {
 		std::vector<float> initTransScale_;
 		std::vector<float> initTransSpeedSpinRotate_;
 	};
-
 	
-}
+} // namespace gl

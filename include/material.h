@@ -1,7 +1,6 @@
 #pragma once
 #include "texture.h"
 #include <glm/glm.hpp>
-#include <memory>
 
 namespace gl
 {
@@ -12,6 +11,5 @@ namespace gl
 		Texture specular_tex;
 		glm::vec3 specular_vec;
 		float specular_pow;
-		
 	};
 } // namespace gl

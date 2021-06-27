@@ -1,9 +1,6 @@
 #pragma once
-
 #include <chrono>
-
 #include "SDL.h"
-
 #include "glm/vec2.hpp"
 
 namespace gl
@@ -26,6 +23,7 @@ namespace gl
     public:
         Engine(Program& program);
         void Run();
+    
     private:
         void Init();
         void Destroy();
@@ -37,4 +35,5 @@ namespace gl
         glm::vec2 windowSize_{1024,720};
         float deltaTime_ = 0.0f;
     };
+	
 } // namespace gl

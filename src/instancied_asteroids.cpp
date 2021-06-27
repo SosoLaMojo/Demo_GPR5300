@@ -2,9 +2,7 @@
 
 namespace gl {
 
-	InstanciedAsteroid::InstanciedAsteroid()
-	{
-	}
+	InstanciedAsteroid::InstanciedAsteroid() {}
 
 	InstanciedAsteroid::InstanciedAsteroid(std::string filepath, float rotationSpeedFactor,
 		glm::vec3 spinRotationAxis, glm::vec3 transVec, glm::vec3 transVec2,
@@ -108,8 +106,8 @@ namespace gl {
 	void InstanciedAsteroid::SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned i)
 	{
 		modelMatrix_[i] = glm::mat4(1.0f);
-		modelMatrix_[i] = glm::rotate(modelMatrix_[i], (time_ + i) * rotationSpeedFactor_, glm::vec3(0.0f, 1.0f, 0.0f));
 		// rotate around specific point
+		modelMatrix_[i] = glm::rotate(modelMatrix_[i], (time_ + i) * rotationSpeedFactor_, glm::vec3(0.0f, 1.0f, 0.0f));
 		if (i < nbAsteroids_ / 2)
 		{
 			modelMatrix_[i] = glm::translate(modelMatrix_[i],
@@ -124,8 +122,7 @@ namespace gl {
 		}
 		modelMatrix_[i] = glm::rotate(modelMatrix_[i], time_ * (spinSpeedFactor_ + initTransSpeedSpinRotate_[i]),
 			spinRotationAxis_); //rotate around themself
-		modelMatrix_[i] = glm::scale(modelMatrix_[i], glm::vec3(initTransScale_[i]));
-		// random de la taille de chaque asteroid
+		modelMatrix_[i] = glm::scale(modelMatrix_[i], glm::vec3(initTransScale_[i])); // random de la taille de chaque asteroid
 	}
 
 	glm::vec3 InstanciedAsteroid::GetPosition(unsigned i)
