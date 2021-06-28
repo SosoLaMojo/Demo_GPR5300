@@ -2,11 +2,11 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <vector>
-#include "shader.h"
-#include "model.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <chrono>
+#include "shader.h"
+#include "model.h"
 
 namespace gl {
 
@@ -15,6 +15,7 @@ namespace gl {
 	public:
 		InstanciedAsteroid();
 
+		// TODO passer par reference pour les vec3 12bit -> 8bit and string + edit name transvec
 		InstanciedAsteroid(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis,
 		                   glm::vec3 transVec, glm::vec3 transVec2, float spinSpeedFactor, unsigned int nbAsteroids,
 		                   float thicknessAsteroidsX, float thicknessAsteroidsY, float maxSizeAsteroid,
@@ -26,6 +27,7 @@ namespace gl {
 
 		glm::vec3 GetPosition(unsigned int i);
 
+		// TODO create struct Transform for asteroids and planets
 		struct AsteroidTransfom
 		{
 			glm::quat rotation;
@@ -35,14 +37,9 @@ namespace gl {
 
 		AsteroidTransfom GetTransform(unsigned int i);
 
-		/*void SetPosition(glm::vec3 position)
-		{
-			modelMatrix_ = glm::translate(modelMatrix_, glm::vec3(0.0f));
-			modelMatrix_ = glm::translate(modelMatrix_, position);
-		}*/
-
 	private:
 
+		// TODO edit names
 		float time_ = 0.0f;
 		float delta_time_ = 0.0f;
 		float spinSpeedFactor_ = 1.0f; // speed spin

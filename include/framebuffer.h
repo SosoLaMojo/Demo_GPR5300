@@ -25,6 +25,7 @@ namespace gl
 
 		void UnBind() const;
 
+		// TODO move this function somewhere else, STATIC function, for testing class and not instance
 		void IsError(const std::string& file, int line) const;
 	};
 } // namespace gl

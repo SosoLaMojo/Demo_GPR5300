@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 #include "shader.h"
 #include "model.h"
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace gl
 {
@@ -12,6 +13,7 @@ namespace gl
 	public:
 		Planet();
 
+		// TODO passer par reference pour les vec3 12bit -> 8bit + string
 		Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis, glm::vec3 transVec,
 			float spinSpeedFactor);
 
@@ -29,12 +31,6 @@ namespace gl
 		};
 
 		PlanetTransfom GetTransform();
-
-		/*void SetPosition(glm::vec3 position)
-		{
-			modelMatrix_ = glm::translate(modelMatrix_, glm::vec3(0.0f));
-			modelMatrix_ = glm::translate(modelMatrix_, position);
-		}*/
 
 	private:
 

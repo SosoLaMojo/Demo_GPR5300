@@ -32,8 +32,10 @@ namespace gl {
 		//void SetModelMatrix(seconds dt);
 		void SetViewMatrix(seconds dt);
 		void SetProjectionMatrix();
-		void IsError(const std::string& file, int line) const;
 		void SetUniformMatrix() const;
+		
+		// TODO move this function somewhere else, STATIC function, for testing class and not instance
+		void IsError(const std::string& file, int line) const;
 
 	protected:
 		unsigned int vertex_shader_;
@@ -59,6 +61,7 @@ namespace gl {
 		glm::vec2 windowSize_ = glm::vec2(1024,720);
 	};
 
+	// TODO move this function somewhere else, STATIC function, for testing class and not instance
 	void HelloScene::IsError(const std::string& file, int line) const
 	{
 		auto error_code = glGetError();
@@ -81,6 +84,7 @@ namespace gl {
 		std::string path = "../";
 
 		// TODO calculate rotate speed and position for each planets + axis rotation sun
+		// TODO create function init in class planet and call here
 		//Planets
 		//index 0
 		planets_.push_back(Planet(path + "data/models/sun.obj",
@@ -137,6 +141,7 @@ namespace gl {
 			glm::vec3(50.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 
+		// TODO create function init in class instanciedAsteroids and call here
 		asteroids_= InstanciedAsteroid(path + "data/models/rock.obj",
 			0.06f, //rotate speed around point
 			glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
@@ -148,16 +153,6 @@ namespace gl {
 			2.0f, //hauteur de chaque ceinture en random
 			2.0f, // taille max des asteroids en random
 			3.0f); // vitesse max de rotation par asteroid en random
-
-		//planets_[0].SetPosition(glm::vec3(0, 0, 0)); // sun
-		//planets_[1].SetPosition(glm::vec3(10, 0, 0)); // mercure
-		//planets_[2].SetPosition(glm::vec3(14, 0, 0)); // venus
-		//planets_[3].SetPosition(glm::vec3(18, 0, 0)); // earth and moon
-		//planets_[4].SetPosition(glm::vec3(22, 0, 0)); // mars
-		//planets_[5].SetPosition(glm::vec3(30, 0, 0)); // jupiter
-		//planets_[6].SetPosition(glm::vec3(35, 0, 0)); // saturn
-		//planets_[7].SetPosition(glm::vec3(40, 0, 0)); // uranus
-		//planets_[8].SetPosition(glm::vec3(45, 0, 0)); // neptune
 
 		// Shaders
 		shader_ = std::make_unique<Shader>(
@@ -177,11 +172,13 @@ namespace gl {
 			path + "data/shaders/hello_scene/instancied_asteroid.frag");
 	}
 
+	// TODO go to class camera
 	void HelloScene::SetViewMatrix(seconds dt)
 	{
 		view_ = camera_->GetViewMatrix();
 	}
 
+	// TODO go to class camera
 	void HelloScene::SetProjectionMatrix()
 	{
 		projection_ = glm::perspective(glm::radians(45.0f),
@@ -190,6 +187,7 @@ namespace gl {
 			200.f); // ligne d'horizon (jusqu'ou on voit au loin)
 	}
 
+	// TODO go to class camera
 	void HelloScene::SetUniformMatrix() const
 	{
 		shader_->Use();
@@ -207,6 +205,7 @@ namespace gl {
 	{
 		// FrameBuffer
 		frameBuffer_->Bind();
+
 		// Planets
 		delta_time_ = dt.count();
 		time_ += delta_time_;
@@ -214,32 +213,38 @@ namespace gl {
 		SetProjectionMatrix();
 		SetUniformMatrix();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		// TODO create function update in class planet and call here
 		shader_->Use();
 		shader_->SetInt("Diffuse", 0);
 		shader_->SetInt("Specular", 1);
-		//std::cout << std::to_string(planets_[0].GetPosition().x) << ", " << std::to_string(planets_[0].GetPosition().y) << ", " << std::to_string(planets_[0].GetPosition().z) << "\n";
 		for (Planet& planet : planets_)
 		{
 			planet.Update(dt, *shader_);
 		}
 
+		// TODO create function update in class InstanciedAsteroids and call here
 		// Asteroids
 		instanciedAsteroidShader_->Use();
 		instanciedAsteroidShader_->SetInt("Diffuse", 0);
 		instanciedAsteroidShader_->SetInt("Specular", 1);
 		asteroids_.Update(dt, *instanciedAsteroidShader_);
 
+		// TODO create function update in class skybox and call here
 		// Skybox
 		glDepthFunc(GL_LEQUAL);
 		skybox_mesh_->Bind();
 		skyboxShader_->Use();
 		skyboxShader_->SetInt("skybox", 0);
 		skyboxShader_->SetMat4("projection", glm::perspective(glm::radians(45.0f),
-			4.0f / 3.0f, 0.1f, 100.f));
+			4.0f / 3.0f, 0.1f, 100.f)); // TODO 4.0f / 3.0f take result 1.33f
 		glm::mat4 view = glm::mat4(glm::mat3(camera_->GetViewMatrix()));
 		skyboxShader_->SetMat4("view", view);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
+		// TODO create function Draw in class skybox and call here
+		glDrawArrays(GL_TRIANGLES, 0, 36); // TODO magic number
 
+		// TODO create function update in class framebuffer and call here
 		// framebuffer
 		frameBuffer_->UnBind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -247,6 +252,7 @@ namespace gl {
 		frameBufferShader_->SetInt("screenTexture", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
+		
 		frameBuffer_->Draw();
 	}
 
@@ -254,6 +260,7 @@ namespace gl {
 	{
 	}
 
+	// TODO move this function somewhere else, STATIC function, for testing class and not instance
 	void IsError(const std::string& file, int line)
 	{
 		auto error_code = glGetError();

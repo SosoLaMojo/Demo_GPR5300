@@ -200,6 +200,7 @@ namespace gl {
 				}
 			}
 		}
+		// TODO move this function somewhere else, STATIC function, for testing class and not instance
 		void IsError(const char* file, int line) const {
 			auto error_code = glGetError();
 			if (error_code != GL_NO_ERROR)

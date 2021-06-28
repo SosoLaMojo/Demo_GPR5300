@@ -80,6 +80,7 @@ namespace gl
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
+	// TODO move this function somewhere else, STATIC function, for testing class and not instance
 	void FrameBuffer::IsError(const std::string& file, int line) const
 	{
 		auto error_code = glGetError();
