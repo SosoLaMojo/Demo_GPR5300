@@ -1,7 +1,7 @@
 #include "planet.h"
 
-namespace gl
-{
+namespace gl {
+
 	Planet::Planet() {}
 
 	Planet::Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis,
@@ -75,4 +75,5 @@ namespace gl
 
 		return result;
 	}
+	
 } // namespace gl

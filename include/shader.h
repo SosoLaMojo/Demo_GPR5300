@@ -48,9 +48,6 @@ namespace gl {
 	private:
 		// utility function for checking shader compilation/linking errors.
 		void CheckCompileErrors(GLuint shader, std::string type);
-		
-		// TODO move this function somewhere else, STATIC function, for testing class and not instance
-		void IsError(const char* file, int line) const;
 	};
 
-} // End namespace gl.
+} // namespace gl.

@@ -2,8 +2,8 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-namespace gl
-{
+namespace gl {
+	
 	class FrameBuffer
 	{
 	private:
@@ -15,17 +15,13 @@ namespace gl
 
 	public:
 		FrameBuffer(glm::vec2 windowSize);
-
-
+		
 		unsigned int GetColorBuffer();
-
+		
 		void Draw() const;
-
 		void Bind() const;
-
 		void UnBind() const;
 
-		// TODO move this function somewhere else, STATIC function, for testing class and not instance
-		void IsError(const std::string& file, int line) const;
 	};
+	
 } // namespace gl

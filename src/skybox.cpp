@@ -121,4 +121,5 @@ namespace gl {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
 	}
-} // End namespace gl.
+	
+} // namespace gl.

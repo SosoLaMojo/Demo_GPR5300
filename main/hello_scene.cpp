@@ -34,9 +34,6 @@ namespace gl {
 		void SetProjectionMatrix();
 		void SetUniformMatrix() const;
 		
-		// TODO move this function somewhere else, STATIC function, for testing class and not instance
-		void IsError(const std::string& file, int line) const;
-
 	protected:
 		unsigned int vertex_shader_;
 		unsigned int fragment_shader_;
@@ -60,20 +57,6 @@ namespace gl {
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		glm::vec2 windowSize_ = glm::vec2(1024,720);
 	};
-
-	// TODO move this function somewhere else, STATIC function, for testing class and not instance
-	void HelloScene::IsError(const std::string& file, int line) const
-	{
-		auto error_code = glGetError();
-		if (error_code != GL_NO_ERROR)
-		{
-			std::cerr
-				<< error_code
-				<< " in file: " << file
-				<< " at line: " << line
-				<< "\n";
-		}
-	}
 
 	void HelloScene::Init()
 	{
@@ -258,20 +241,6 @@ namespace gl {
 
 	void HelloScene::Destroy()
 	{
-	}
-
-	// TODO move this function somewhere else, STATIC function, for testing class and not instance
-	void IsError(const std::string& file, int line)
-	{
-		auto error_code = glGetError();
-		if (error_code != GL_NO_ERROR)
-		{
-			std::cerr
-				<< error_code
-				<< " in file: " << file
-				<< " at line: " << line
-				<< "\n";
-		}
 	}
 
 	void HelloScene::OnEvent(SDL_Event& event)

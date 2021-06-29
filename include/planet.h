@@ -6,8 +6,8 @@
 #include "model.h"
 #include <glm/gtx/matrix_decompose.hpp>
 
-namespace gl
-{
+namespace gl {
+	
 	class Planet
 	{
 	public:
@@ -18,7 +18,6 @@ namespace gl
 			float spinSpeedFactor);
 
 		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader);
-
 		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt);
 
 		glm::vec3 GetPosition();

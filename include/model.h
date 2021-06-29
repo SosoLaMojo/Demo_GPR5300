@@ -20,7 +20,6 @@ namespace gl {
 
 	private:
 		void ParseMaterial(const tinyobj::material_t& material);
-
 		void ParseMesh(const tinyobj::shape_t& shape, const tinyobj::attrib_t& attrib);
 	};
 

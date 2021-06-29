@@ -77,4 +77,4 @@ namespace gl {
 		void updateCameraVectors();
 	};
 
-} // End namespace gl.
+} // namespace gl.

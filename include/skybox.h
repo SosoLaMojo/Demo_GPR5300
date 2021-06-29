@@ -1,6 +1,7 @@
 #pragma once
 
 namespace gl {
+	
 	class MeshSkybox
 	{
 	private:

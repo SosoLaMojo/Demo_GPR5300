@@ -2,8 +2,8 @@
 #include <glad/glad.h>
 #include "framebuffer.h"
 
-namespace gl
-{
+namespace gl {
+	
 	FrameBuffer::FrameBuffer(glm::vec2 windowSize)
 	{
 		float quadVertices[24] = {
@@ -78,20 +78,6 @@ namespace gl
 	void FrameBuffer::UnBind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	// TODO move this function somewhere else, STATIC function, for testing class and not instance
-	void FrameBuffer::IsError(const std::string& file, int line) const
-	{
-		auto error_code = glGetError();
-		if (error_code != GL_NO_ERROR)
-		{
-			std::cerr
-				<< error_code
-				<< " in file: " << file
-				<< " at line: " << line
-				<< "\n";
-		}
 	}
 	
 } // namespace gl

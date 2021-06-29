@@ -194,18 +194,5 @@ namespace gl {
 			}
 		}
 	}
-
-	// TODO move this function somewhere else, STATIC function, for testing class and not instance
-	void Shader::IsError(const char* file, int line) const
-	{
-		auto error_code = glGetError();
-		if (error_code != GL_NO_ERROR)
-		{
-			throw std::runtime_error(
-				std::to_string(error_code) +
-				" in file: " + file +
-				" at line: " + std::to_string(line));
-		}
-	}
 	
 } // namespace gl

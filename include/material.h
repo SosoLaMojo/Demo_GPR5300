@@ -2,8 +2,8 @@
 #include "texture.h"
 #include <glm/glm.hpp>
 
-namespace gl
-{
+namespace gl {
+	
 	class Material
 	{
 	public:
@@ -12,4 +12,5 @@ namespace gl
 		glm::vec3 specular_vec;
 		float specular_pow;
 	};
+	
 } // namespace gl

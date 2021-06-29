@@ -153,4 +153,5 @@ namespace gl {
 
 		return result;
 	}
+	
 } // namespace gl

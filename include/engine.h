@@ -3,8 +3,8 @@
 #include "SDL.h"
 #include "glm/vec2.hpp"
 
-namespace gl
-{
+namespace gl {
+	
     using seconds = std::chrono::duration<float, std::ratio<1, 1>>;
 
     class Program

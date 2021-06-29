@@ -15,9 +15,6 @@ namespace gl {
 		void Bind(unsigned int i = 0) const;
 
 		void UnBind();
-	protected:
-		// TODO move this function somewhere else, STATIC function, for testing class and not instance
-		void IsError(const char* file, int line) const;
 	};
 
 } // End namespace gl.

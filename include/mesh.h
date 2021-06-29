@@ -31,8 +31,7 @@ namespace gl {
 		unsigned int GetVao() const;
 
 		void Bind() const;
-
 		void UnBind() const;
 	};
 	
-} // End namespace gl.
+} // namespace gl.
