@@ -5,6 +5,7 @@ newmtl Saturn.007
 map_Kd saturn/Saturn_Color.png
 map_Pr saturn/Saturn_Roughness.png
 map_Ks saturn/Saturn_Roughness.png
+map_bump saturn/Saturn_Normal.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

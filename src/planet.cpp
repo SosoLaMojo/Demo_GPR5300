@@ -26,7 +26,7 @@ namespace gl {
 			mesh.Bind();
 			const auto& material = model_->materials[mesh.material_index];
 			material.color_tex.Bind(0);
-			material.specular_tex.Bind(1);
+			material.normal_tex.Bind(1);
 			shader.SetFloat("specular_pow", material.specular_pow);
 			shader.SetVec3("specular_vec", material.specular_vec);
 			glDrawElements(GL_TRIANGLES, mesh.nb_vertices, GL_UNSIGNED_INT, 0);

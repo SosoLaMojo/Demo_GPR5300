@@ -11,6 +11,8 @@ namespace gl {
 		Texture specular_tex;
 		glm::vec3 specular_vec;
 		float specular_pow;
+
+		Texture normal_tex;
 	};
 	
 } // namespace gl

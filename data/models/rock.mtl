@@ -5,6 +5,7 @@ newmtl Material.001
 map_Kd asteroid/rock.png
 map_Pr asteroid/rock_Roughness.png
 map_Ks asteroid/rock_Roughness.png
+map_bump asteroid/rock_Normal.png
 //Ns 13.725486
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.640000 0.640000 0.640000
@@ -13,4 +14,4 @@ map_Ks asteroid/rock_Roughness.png
 //Ni 1.000000
 //d 1.000000
 illum 2
-map_Bump rock.png
+# map_Bump rock.png

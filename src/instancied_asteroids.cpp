@@ -91,8 +91,8 @@ namespace gl {
 	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
 	{
 		shader.Use();
-		shader.SetInt("Diffuse", 0);
-		shader.SetInt("Specular", 1);
+		shader.SetInt("TexDiffuse", 0);
+		shader.SetInt("TexNormal", 1);
 		
 		delta_time_ = dt.count();
 		time_ += delta_time_;
@@ -105,7 +105,7 @@ namespace gl {
 		mesh.Bind();
 		const auto& material = model_->materials[mesh.material_index];
 		material.color_tex.Bind(0);
-		material.specular_tex.Bind(1);
+		material.normal_tex.Bind(1);
 		shader.SetFloat("specular_pow", material.specular_pow);
 		shader.SetVec3("specular_vec", material.specular_vec);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceVBO_);

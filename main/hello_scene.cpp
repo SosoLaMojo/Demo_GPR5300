@@ -45,7 +45,6 @@ namespace gl {
 
 		std::unique_ptr<Camera> camera_ = nullptr;
 		std::unique_ptr<Shader> shader_ = nullptr;
-		//std::unique_ptr<Shader> skyboxShader_ = nullptr; 
 		std::unique_ptr<Shader> frameBufferShader_ = nullptr;
 		std::unique_ptr<Model> model_obj_ = nullptr;
 		std::unique_ptr<ModelSkybox> skybox_mesh_ = nullptr;
@@ -57,6 +56,8 @@ namespace gl {
 		glm::mat4 view_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		glm::vec2 windowSize_ = glm::vec2(1024,720);
+
+		glm::vec3 lightPos_ = glm::vec3(3.0f);
 	};
 
 	void HelloScene::Init()
@@ -175,6 +176,8 @@ namespace gl {
 		shader_->SetMat4("view", view_);
 		shader_->SetMat4("projection", projection_);
 		shader_->SetVec3("camera_position", camera_->position);
+		
+		shader_->SetVec3("lightPos", lightPos_);
 
 		instanciedAsteroidShader_->Use();
 		instanciedAsteroidShader_->SetMat4("view", view_);
@@ -196,8 +199,8 @@ namespace gl {
 		
 		// Planets
 		shader_->Use();
-		shader_->SetInt("Diffuse", 0);
-		shader_->SetInt("Specular", 1);
+		shader_->SetInt("TexDiffuse", 0);
+		shader_->SetInt("TexNormal", 1);
 		for (Planet& planet : planets_)
 		{
 			planet.Update(dt, *shader_);

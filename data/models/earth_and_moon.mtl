@@ -5,6 +5,7 @@ newmtl Earth.001
 map_Kd earth/Earth_Color.png
 map_Pr earth/Earth_Roughness.png
 map_Ks earth/Earth_Roughness.png
+map_bump earth/Earth_Normal.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000
@@ -17,6 +18,7 @@ illum 2
 newmtl Moon.003
 map_Kd moon/Diffuse_2K.png
 map_Ks moon/Specular_2K.png
+map_bump moon/Normal_2K.png
 //Ns 900.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

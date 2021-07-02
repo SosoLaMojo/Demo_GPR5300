@@ -5,6 +5,7 @@ newmtl Mercury.003
 map_Kd mercury/Mercury_Color.png
 map_Pr mercury/Mercury_Roughness.png
 map_Ks mercury/Mercury_Roughness.png
+map_bump mercury/Mercury_Normal.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

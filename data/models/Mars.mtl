@@ -5,6 +5,7 @@ newmtl Mars.002
 map_Kd mars/Mars_Color.png
 map_Pr mars/Mars_Roughness.png
 map_Ks mars/Mars_Roughness.png
+map_bump mars/Mars_Normal.png
 //Ns 225.000000
 //Ka 1.000000 1.000000 1.000000
 //Kd 0.800000 0.800000 0.800000

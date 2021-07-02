@@ -1,6 +1,7 @@
 #include "texture.h"
 #include <cassert>
 #include <glad/glad.h>
+#include "error.h"
 
 namespace gl {
 	
