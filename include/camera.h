@@ -54,7 +54,7 @@ namespace gl {
 
 		// returns the view matrix calculated using Euler Angles and the LookAt
 		// Matrix
-		glm::mat4 GetViewMatrix();
+		glm::mat4 GetViewMatrix() const;
 
 		// processes input received from any keyboard-like input system.
 		// Accepts input parameter in the form of camera defined ENUM (to

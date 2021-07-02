@@ -64,6 +64,16 @@ namespace gl {
 		return texColorBuffer_;
 	}
 
+	/*void FrameBuffer::Update() const
+	{
+		frameBuffer_->UnBind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		frameBufferShader_->Use();
+		frameBufferShader_->SetInt("screenTexture", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
+	}*/
+
 	void FrameBuffer::Draw() const
 	{
 		glBindVertexArray(quadVAO_);

@@ -73,8 +73,27 @@ namespace gl {
 		glBindVertexArray(0);
 	}
 
+	//void InstanciedAsteroid::Init()
+	//{
+	//	InstanciedAsteroid(path + "data/models/rock.obj",
+	//		0.06f, //rotate speed around point
+	//		glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
+	//		glm::vec3(55.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world -> ceinture2
+	//		glm::vec3(27.0f, 0.0f, 0.0f), //  -> ceinture1
+	//		0.5f, // min speed spin
+	//		7000, // nb asteroids sur les 2 ceintures / 2
+	//		4.0f, // largeur de chaque ceinture en random
+	//		2.0f, //hauteur de chaque ceinture en random
+	//		2.0f, // taille max des asteroids en random
+	//		3.0f); // vitesse max de rotation par asteroid en random
+	//}
+	
 	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
 	{
+		shader.Use();
+		shader.SetInt("Diffuse", 0);
+		shader.SetInt("Specular", 1);
+		
 		delta_time_ = dt.count();
 		time_ += delta_time_;
 
@@ -98,7 +117,8 @@ namespace gl {
 		glBindVertexArray(mesh.GetVao());
 		glDrawElementsInstanced(GL_TRIANGLES,
 			mesh.nb_vertices,
-			GL_UNSIGNED_INT, 0,
+			GL_UNSIGNED_INT, 
+			0,
 			modelMatrix_.size());
 		glBindVertexArray(0);
 	}
@@ -122,7 +142,7 @@ namespace gl {
 		}
 		modelMatrix_[i] = glm::rotate(modelMatrix_[i], time_ * (spinSpeedFactor_ + initTransSpeedSpinRotate_[i]),
 			spinRotationAxis_); //rotate around themself
-		modelMatrix_[i] = glm::scale(modelMatrix_[i], glm::vec3(initTransScale_[i])); // random de la taille de chaque asteroid
+		modelMatrix_[i] = glm::scale(modelMatrix_[i], glm::vec3(initTransScale_[i])); // random size of each asteroids
 	}
 
 	glm::vec3 InstanciedAsteroid::GetPosition(unsigned i)
@@ -137,7 +157,7 @@ namespace gl {
 		return translation;
 	}
 
-	InstanciedAsteroid::AsteroidTransfom InstanciedAsteroid::GetTransform(unsigned i)
+	/*InstanciedAsteroid::AsteroidTransfom InstanciedAsteroid::GetTransform(unsigned i)
 	{
 		glm::vec3 scale;
 		glm::quat rotation;
@@ -152,6 +172,6 @@ namespace gl {
 		result.rotation = rotation;
 
 		return result;
-	}
+	}*/
 	
 } // namespace gl

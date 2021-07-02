@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <glm/vec2.hpp>
+#include "shader.h"
 
 namespace gl {
 	
@@ -13,15 +14,20 @@ namespace gl {
 		unsigned int quadVAO_ = 0;
 		unsigned int quadVBO_ = 0;
 
+		std::unique_ptr<FrameBuffer> frameBuffer_ = nullptr;
+		std::unique_ptr<Shader> frameBufferShader_ = nullptr;
+	
 	public:
 		FrameBuffer(glm::vec2 windowSize);
 		
 		unsigned int GetColorBuffer();
 		
+		/*void Update() const;*/
 		void Draw() const;
 		void Bind() const;
 		void UnBind() const;
 
+	protected:
 	};
 	
 } // namespace gl

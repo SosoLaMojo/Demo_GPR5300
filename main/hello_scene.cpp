@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "engine.h"
 #include "camera.h"
+#include "error.h"
 #include "texture.h"
 #include "shader.h"
 #include "model.h"
@@ -44,15 +45,15 @@ namespace gl {
 
 		std::unique_ptr<Camera> camera_ = nullptr;
 		std::unique_ptr<Shader> shader_ = nullptr;
-		std::unique_ptr<Shader> skyboxShader_ = nullptr;
+		//std::unique_ptr<Shader> skyboxShader_ = nullptr; 
 		std::unique_ptr<Shader> frameBufferShader_ = nullptr;
 		std::unique_ptr<Model> model_obj_ = nullptr;
-		std::unique_ptr<MeshSkybox> skybox_mesh_ = nullptr;
+		std::unique_ptr<ModelSkybox> skybox_mesh_ = nullptr;
 		std::unique_ptr<FrameBuffer> frameBuffer_ = nullptr;
 		std::vector<Planet> planets_;
 		InstanciedAsteroid asteroids_;
 		std::unique_ptr<Shader> instanciedAsteroidShader_ = nullptr;
-
+		
 		glm::mat4 view_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		glm::vec2 windowSize_ = glm::vec2(1024,720);
@@ -60,91 +61,88 @@ namespace gl {
 
 	void HelloScene::Init()
 	{
+		SDL_GL_SetSwapInterval(0); // FPS
 		glEnable(GL_DEPTH_TEST);
 		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 50.0f)); // Camera position
-		skybox_mesh_ = std::make_unique<MeshSkybox>();
 		frameBuffer_ = std::make_unique<FrameBuffer>(windowSize_);
 		std::string path = "../";
+		skybox_mesh_ = std::make_unique<ModelSkybox>(path, *camera_);
 
+		planets_.reserve(9);
+		
 		// TODO calculate rotate speed and position for each planets + axis rotation sun
-		// TODO create function init in class planet and call here
 		//Planets
 		//index 0
-		planets_.push_back(Planet(path + "data/models/sun.obj",
+		planets_.emplace_back(Planet(path + "data/models/sun.obj",
 			0.0f,	//rotate speed around point
 			glm::vec3(0.0f, 0.01f, 0.0f),// Axis rotation spin
 			glm::vec3(0.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			0.1f));// speed spin
 		//index 1
-		planets_.push_back(Planet(path + "data/models/mercure.obj",
+		planets_.emplace_back(Planet(path + "data/models/mercure.obj",
 			0.17f, //rotate speed around point
 			glm::vec3(0.03f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(10.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			0.1f));// speed spin
 		//index 2
-		planets_.push_back(Planet(path + "data/models/venus.obj",
+		planets_.emplace_back(Planet(path + "data/models/venus.obj",
 			0.12f, //rotate speed around point
 			glm::vec3(0.052f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(14.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			0.1f));// speed spin
 		//index 3
-		planets_.push_back(Planet(path + "data/models/earth_and_moon.obj",
+		planets_.emplace_back(Planet(path + "data/models/earth_and_moon.obj",
 			0.1f, //rotate speed around point
 			glm::vec3(0.43f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(18.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			0.1f));// speed spin
 		//index 4
-		planets_.push_back(Planet(path + "data/models/mars.obj",
+		planets_.emplace_back(Planet(path + "data/models/mars.obj",
 			0.08f, //rotate speed around point
 			glm::vec3(0.44f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(22.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 		//index 5
-		planets_.push_back(Planet(path + "data/models/jupiter.obj",
+		planets_.emplace_back(Planet(path + "data/models/jupiter.obj",
 			0.04f, //rotate speed around point
 			glm::vec3(0.052f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(35.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 		//index 6
-		planets_.push_back(Planet(path + "data/models/saturn.obj",
+		planets_.emplace_back(Planet(path + "data/models/saturn.obj",
 			0.03f, //rotate speed around point
 			glm::vec3(0.5f, -1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(40.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 		//index 7
-		planets_.push_back(Planet(path + "data/models/uranus.obj",
+		planets_.emplace_back(Planet(path + "data/models/uranus.obj",
 			0.02f, //rotate speed around point
 			glm::vec3(7.11f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(45.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 		//index 8
-		planets_.push_back(Planet(path + "data/models/neptune.obj",
+		planets_.emplace_back(Planet(path + "data/models/neptune.obj",
 			0.01f, //rotate speed around point
 			glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
 			glm::vec3(50.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
 			1.5f));// speed spin
 
-		// TODO create function init in class instanciedAsteroids and call here
 		asteroids_= InstanciedAsteroid(path + "data/models/rock.obj",
 			0.06f, //rotate speed around point
 			glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
-			glm::vec3(55.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world
-			glm::vec3(27.0f, 0.0f, 0.0f),
+			glm::vec3(55.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world -> ceinture2
+			glm::vec3(27.0f, 0.0f, 0.0f), //  -> ceinture1
 			0.5f, // min speed spin
 			7000, // nb asteroids sur les 2 ceintures / 2
 			4.0f, // largeur de chaque ceinture en random
 			2.0f, //hauteur de chaque ceinture en random
 			2.0f, // taille max des asteroids en random
 			3.0f); // vitesse max de rotation par asteroid en random
-
+		
 		// Shaders
 		shader_ = std::make_unique<Shader>(
 			path + "data/shaders/hello_scene/scene.vert",
 			path + "data/shaders/hello_scene/scene.frag");
-
-		skyboxShader_ = std::make_unique<Shader>(
-			path + "data/shaders/hello_scene/skybox.vert",
-			path + "data/shaders/hello_scene/skybox.frag");
 
 		frameBufferShader_ = std::make_unique<Shader>(
 			path + "data/shaders/hello_scene/frame_buffer.vert",
@@ -189,7 +187,6 @@ namespace gl {
 		// FrameBuffer
 		frameBuffer_->Bind();
 
-		// Planets
 		delta_time_ = dt.count();
 		time_ += delta_time_;
 		SetViewMatrix(dt);
@@ -197,7 +194,7 @@ namespace gl {
 		SetUniformMatrix();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		// TODO create function update in class planet and call here
+		// Planets
 		shader_->Use();
 		shader_->SetInt("Diffuse", 0);
 		shader_->SetInt("Specular", 1);
@@ -205,28 +202,14 @@ namespace gl {
 		{
 			planet.Update(dt, *shader_);
 		}
-
-		// TODO create function update in class InstanciedAsteroids and call here
-		// Asteroids
-		instanciedAsteroidShader_->Use();
-		instanciedAsteroidShader_->SetInt("Diffuse", 0);
-		instanciedAsteroidShader_->SetInt("Specular", 1);
-		asteroids_.Update(dt, *instanciedAsteroidShader_);
-
-		// TODO create function update in class skybox and call here
-		// Skybox
-		glDepthFunc(GL_LEQUAL);
-		skybox_mesh_->Bind();
-		skyboxShader_->Use();
-		skyboxShader_->SetInt("skybox", 0);
-		skyboxShader_->SetMat4("projection", glm::perspective(glm::radians(45.0f),
-			4.0f / 3.0f, 0.1f, 100.f)); // TODO 4.0f / 3.0f take result 1.33f
-		glm::mat4 view = glm::mat4(glm::mat3(camera_->GetViewMatrix()));
-		skyboxShader_->SetMat4("view", view);
 		
-		// TODO create function Draw in class skybox and call here
-		glDrawArrays(GL_TRIANGLES, 0, 36); // TODO magic number
-
+		// Asteroids
+		asteroids_.Update(dt, *instanciedAsteroidShader_);
+		
+		// Skybox
+		skybox_mesh_->Update();
+		skybox_mesh_->Draw();
+		
 		// TODO create function update in class framebuffer and call here
 		// framebuffer
 		frameBuffer_->UnBind();
@@ -235,7 +218,7 @@ namespace gl {
 		frameBufferShader_->SetInt("screenTexture", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
-		
+		/*frameBuffer_->Update();*/
 		frameBuffer_->Draw();
 	}
 
@@ -286,7 +269,7 @@ namespace gl {
 	{
 	}
 
-} // End namespace gl.
+} // namespace gl.
 
 int main(int argc, char** argv)
 {

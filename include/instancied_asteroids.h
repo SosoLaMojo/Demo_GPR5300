@@ -15,12 +15,14 @@ namespace gl {
 	public:
 		InstanciedAsteroid();
 
-		// TODO passer par reference pour les vec3 12bit -> 8bit and string + edit name transvec
+		// TODO passer par reference pour les vec3 12bit -> 8bit and string + edit name transvec -> ceinture asteroids1 et 2
 		InstanciedAsteroid(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis,
 		                   glm::vec3 transVec, glm::vec3 transVec2, float spinSpeedFactor, unsigned int nbAsteroids,
 		                   float thicknessAsteroidsX, float thicknessAsteroidsY, float maxSizeAsteroid,
 		                   float maxSpeedSpinAsteroid);
 
+		/*void Init();*/
+		
 		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader);
 
 		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned int i);
@@ -28,14 +30,14 @@ namespace gl {
 		glm::vec3 GetPosition(unsigned int i);
 
 		// TODO create struct Transform for asteroids and planets
-		struct AsteroidTransfom
+		/*struct AsteroidTransfom
 		{
 			glm::quat rotation;
 			glm::vec3 translation;
 			glm::vec3 scale;
-		};
+		};*/
 
-		AsteroidTransfom GetTransform(unsigned int i);
+		//AsteroidTransfom GetTransform(unsigned int i);
 
 	private:
 
@@ -62,6 +64,8 @@ namespace gl {
 		std::vector<float> initTransDistanceY_;
 		std::vector<float> initTransScale_;
 		std::vector<float> initTransSpeedSpinRotate_;
+
+		/*std::string path = "../";*/
 	};
 	
 } // namespace gl
