@@ -5,7 +5,6 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTex;
 layout(location = 3) in vec3 aTangent;
 
-out vec3 FragPos;
 out vec3 out_normal;
 out vec2 out_tex;
 
@@ -36,7 +35,7 @@ void main()
 
     TangentLightPos = TBN * lightPos;
     TangentViewPos = TBN * viewPos;
-    TangentFragPos = TBN * FragPos;
+    TangentFragPos = TBN * (model * vec4(aPos, 1.0)).xyz;
 
     vec4 pos = projection * view * model * vec4(aPos, 1.0);
     gl_Position = pos;

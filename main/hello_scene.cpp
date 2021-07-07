@@ -18,8 +18,8 @@
 #include "planet.h"
 #include "framebuffer.h"
 
-#include "Tracy.hpp"
-#include "TracyOpenGL.hpp"
+//#include "Tracy.hpp"
+//#include "TracyOpenGL.hpp"
 
 namespace gl {
 
@@ -54,18 +54,19 @@ namespace gl {
 		std::vector<Planet> planets_;
 		InstanciedAsteroid asteroids_;
 		std::unique_ptr<Shader> instanciedAsteroidShader_ = nullptr;
+		std::unique_ptr<Shader> sunShader_ = nullptr;
 		
 		glm::mat4 view_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		glm::vec2 windowSize_ = glm::vec2(1024,720);
 
-		glm::vec3 lightPos_ = glm::vec3(3.0f);
+		glm::vec3 lightPos_ = glm::vec3(0.0f);
 	};
 
 	void HelloScene::Init()
 	{
-		ZoneScoped;
-		TracyGpuZone("Check Init");
+		/*ZoneScoped;
+		TracyGpuZone("Check Init");*/
 		
 		SDL_GL_SetSwapInterval(0); // FPS
 		glEnable(GL_DEPTH_TEST);
@@ -157,6 +158,10 @@ namespace gl {
 		instanciedAsteroidShader_ = std::make_unique<Shader>(
 			path + "data/shaders/hello_scene/instancied_asteroid.vert",
 			path + "data/shaders/hello_scene/instancied_asteroid.frag");
+
+		sunShader_ = std::make_unique<Shader>(
+			path + "data/shaders/hello_scene/sun.vert",
+			path + "data/shaders/hello_scene/sun.frag");
 	}
 
 	// TODO go to class camera
@@ -180,7 +185,7 @@ namespace gl {
 		shader_->Use();
 		shader_->SetMat4("view", view_);
 		shader_->SetMat4("projection", projection_);
-		shader_->SetVec3("camera_position", camera_->position);
+		shader_->SetVec3("viewPos", camera_->position);
 		
 		shader_->SetVec3("lightPos", lightPos_);
 
@@ -188,12 +193,16 @@ namespace gl {
 		instanciedAsteroidShader_->SetMat4("view", view_);
 		instanciedAsteroidShader_->SetMat4("projection", projection_);
 		instanciedAsteroidShader_->SetVec3("camera_position", camera_->position);
+
+		sunShader_->Use();
+		sunShader_->SetMat4("view", view_);
+		sunShader_->SetMat4("projection", projection_);
 	}
 
 	void HelloScene::Update(seconds dt)
 	{
-		ZoneScoped;
-		TracyGpuZone("Check Update");
+		/*ZoneScoped;
+		TracyGpuZone("Check Update");*/
 		// FrameBuffer
 		frameBuffer_->Bind();
 
@@ -205,13 +214,26 @@ namespace gl {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		// Planets
-		shader_->Use();
-		shader_->SetInt("TexDiffuse", 0);
-		shader_->SetInt("TexNormal", 1);
-		for (Planet& planet : planets_)
+		for (size_t i = 0 ; i < planets_.size(); i++)
 		{
-			planet.Update(dt, *shader_);
+			if(i == 0)
+			{
+				sunShader_->Use();
+				sunShader_->SetInt("Texture", 0);
+				planets_[i].Update(dt, *sunShader_);
+			}
+			else
+			{
+				shader_->Use();
+				shader_->SetInt("TexDiffuse", 0);
+				shader_->SetInt("TexNormal", 1);
+				planets_[i].Update(dt, *shader_);
+			}
 		}
+		// for (Planet& planet : planets_)
+		// {
+		// 	planet.Update(dt, *shader_);
+		// }
 		
 		// Asteroids
 		asteroids_.Update(dt, *instanciedAsteroidShader_);

@@ -11,6 +11,7 @@ namespace gl {
 		unsigned int FBO_ = 0;
 		unsigned int RBO_ = 0;
 		unsigned int texColorBuffer_ = 0;
+		unsigned int texColorBufferBloom_ = 0;
 		unsigned int quadVAO_ = 0;
 		unsigned int quadVBO_ = 0;
 

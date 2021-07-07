@@ -3,8 +3,8 @@
 #include <glad/glad.h>
 #include "error.h"
 
-#include "Tracy.hpp"
-#include "TracyOpenGL.hpp"
+//#include "Tracy.hpp"
+//#include "TracyOpenGL.hpp"
 
 namespace gl {
 	
@@ -12,8 +12,8 @@ namespace gl {
 
 	Texture::Texture(const std::string& file_name)
 	{
-		ZoneScoped;
-		TracyGpuZone("Check load texture");
+		/*ZoneScoped;
+		TracyGpuZone("Check load texture");*/
 		int width, height, nrChannels;
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* dataDiffuse = stbi_load(
@@ -83,8 +83,8 @@ namespace gl {
 
 	void Texture::Bind(unsigned i) const
 	{
-		ZoneScoped;
-		TracyGpuZone("Check bind texture");
+		/*ZoneScoped;
+		TracyGpuZone("Check bind texture");*/
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, id);
 	}
