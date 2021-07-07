@@ -1,6 +1,8 @@
 #include <engine.h>
 #include <iostream>
 #include <glad/glad.h>
+#include <Tracy.hpp>
+#include <TracyOpenGL.hpp>
 
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -17,8 +19,8 @@ namespace gl {
 		SDL_Init(SDL_INIT_VIDEO);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+		//SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 
@@ -55,11 +57,13 @@ namespace gl {
 		SDL_GL_MakeCurrent(window_, glRenderContext_);
 		SDL_GL_SetSwapInterval(1);
 
-		if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 		{
 			std::cerr << "Failed to initialize OpenGL context\n";
 			assert(false);
 		}
+
+		TracyGpuContext;
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
@@ -118,6 +122,8 @@ namespace gl {
 				program_.Update(dt);
 				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 				SDL_GL_SwapWindow(window_);
+				FrameMark;
+				TracyGpuCollect;
 			}
 
 			Destroy();

@@ -6,10 +6,6 @@
         "tinyobjloader",
         "glm",
         "sdl2",
-      {
-        "name": "glad",
-        "features": [ "extensions", "gles2-api-latest" ]
-      },
         "stb",
         {
             "name": "imgui",

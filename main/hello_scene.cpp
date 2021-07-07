@@ -18,6 +18,9 @@
 #include "planet.h"
 #include "framebuffer.h"
 
+#include "Tracy.hpp"
+#include "TracyOpenGL.hpp"
+
 namespace gl {
 
 	class HelloScene : public Program
@@ -30,7 +33,6 @@ namespace gl {
 		void DrawImGui() override;
 
 	protected:
-		//void SetModelMatrix(seconds dt);
 		void SetViewMatrix(seconds dt);
 		void SetProjectionMatrix();
 		void SetUniformMatrix() const;
@@ -62,6 +64,9 @@ namespace gl {
 
 	void HelloScene::Init()
 	{
+		ZoneScoped;
+		TracyGpuZone("Check Init");
+		
 		SDL_GL_SetSwapInterval(0); // FPS
 		glEnable(GL_DEPTH_TEST);
 		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 50.0f)); // Camera position
@@ -187,6 +192,8 @@ namespace gl {
 
 	void HelloScene::Update(seconds dt)
 	{
+		ZoneScoped;
+		TracyGpuZone("Check Update");
 		// FrameBuffer
 		frameBuffer_->Bind();
 

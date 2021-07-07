@@ -3,12 +3,17 @@
 #include <glad/glad.h>
 #include "error.h"
 
+#include "Tracy.hpp"
+#include "TracyOpenGL.hpp"
+
 namespace gl {
 	
 	Texture::Texture() {}
 
 	Texture::Texture(const std::string& file_name)
 	{
+		ZoneScoped;
+		TracyGpuZone("Check load texture");
 		int width, height, nrChannels;
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* dataDiffuse = stbi_load(
@@ -73,10 +78,13 @@ namespace gl {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(dataDiffuse);
 	}
 
 	void Texture::Bind(unsigned i) const
 	{
+		ZoneScoped;
+		TracyGpuZone("Check bind texture");
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, id);
 	}

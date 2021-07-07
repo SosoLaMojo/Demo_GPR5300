@@ -72,21 +72,6 @@ namespace gl {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-
-	//void InstanciedAsteroid::Init()
-	//{
-	//	InstanciedAsteroid(path + "data/models/rock.obj",
-	//		0.06f, //rotate speed around point
-	//		glm::vec3(0.54f, 1.0f, 0.0f),// Axis rotation spin
-	//		glm::vec3(55.0f, 0.0f, 0.0f),// transVec movement planet World, position of planet in world -> ceinture2
-	//		glm::vec3(27.0f, 0.0f, 0.0f), //  -> ceinture1
-	//		0.5f, // min speed spin
-	//		7000, // nb asteroids sur les 2 ceintures / 2
-	//		4.0f, // largeur de chaque ceinture en random
-	//		2.0f, //hauteur de chaque ceinture en random
-	//		2.0f, // taille max des asteroids en random
-	//		3.0f); // vitesse max de rotation par asteroid en random
-	//}
 	
 	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
 	{

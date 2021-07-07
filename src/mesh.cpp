@@ -5,13 +5,12 @@ namespace gl {
 	
 	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<std::uint32_t>& indices,
 		const unsigned material_id) :
-		//vertice(vertices),
 		material_index(material_id),
 		nb_vertices(static_cast<unsigned int>(indices.size()))
 	{
 		// VAO binding should be before VAO.
 		glGenVertexArrays(1, &VAO_);
-		glBindVertexArray(VAO_); // pour mirroir mettre a la fin
+		glBindVertexArray(VAO_);
 
 		// EBO.
 		glGenBuffers(1, &EBO_);

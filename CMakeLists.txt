@@ -14,6 +14,8 @@ find_package(OpenGL REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h")
 
+
+
 file(GLOB_RECURSE GLSL_SOURCE_FILES
 		"data/*.frag"
 		"data/*.vert"
@@ -28,8 +30,11 @@ add_custom_target(
 		ShadersCheck
 		DEPENDS ${GLSL_OUTPUT_FILES}
 )
-
+set(TRACY_FOLDER "${CMAKE_SOURCE_DIR}/externals/tracy/" CACHE STRING "")
 file(GLOB_RECURSE SOURCES src/*.cpp include/*.h)
+list(APPEND SOURCES "${TRACY_FOLDER}/TracyClient.cpp" "${TRACY_FOLDER}/Tracy.hpp")
+add_compile_definitions(TRACY_ENABLE)
+include_directories("${TRACY_FOLDER}")
 add_library(CommonLib STATIC ${SOURCES} ${GLSL_SOURCE_FILES})
 add_dependencies(CommonLib ShadersCheck)
 target_include_directories(CommonLib PUBLIC "include/")
