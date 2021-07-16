@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include "framebuffer.h"
 
+#include <vector>
+
 namespace gl {
 	
 	FrameBuffer::FrameBuffer(glm::vec2 windowSize)
@@ -18,10 +20,12 @@ namespace gl {
 		// FBO
 		glGenFramebuffers(1, &FBO_);
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO_);
+
+		// TODO create for --------------------------------------------------------------
 		// Generate texture
 		glGenTextures(1, &texColorBuffer_);
 		glBindTexture(GL_TEXTURE_2D, texColorBuffer_);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowSize.x, windowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer_, 0);
@@ -29,10 +33,14 @@ namespace gl {
 		// Generate texture bloom
 		glGenTextures(1, &texColorBufferBloom_);
 		glBindTexture(GL_TEXTURE_2D, texColorBufferBloom_);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowSize.x, windowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, texColorBufferBloom_, 0);
+
+		std::vector<unsigned int> attachement = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		glDrawBuffers(2, attachement.data());
+		// ------------------------------------------------------------------------------
 		
 		// RBO
 		glGenRenderbuffers(1, &RBO_);
@@ -71,6 +79,11 @@ namespace gl {
 	unsigned FrameBuffer::GetColorBuffer()
 	{
 		return texColorBuffer_;
+	}
+
+	unsigned FrameBuffer::GetColorBuffer1()
+	{
+		return texColorBufferBloom_;
 	}
 
 	/*void FrameBuffer::Update() const

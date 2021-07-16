@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <chrono>
+
+#include "camera.h"
 #include "shader.h"
 #include "model.h"
 
@@ -21,7 +23,7 @@ namespace gl {
 		                   float thicknessAsteroidsX, float thicknessAsteroidsY, float maxSizeAsteroid,
 		                   float maxSpeedSpinAsteroid);
 		
-		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader);
+		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader, Camera* camera);
 
 		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned int i);
 

@@ -28,6 +28,11 @@ namespace gl {
 		updateCameraVectors();
 	}
 
+	float Camera::GetFovX() const
+	{
+		return glm::degrees(2.0f * std::atan(std::tan(glm::radians(fovY) * 0.5f) * aspect));
+	}
+
 	glm::mat4 Camera::GetViewMatrix() const
 	{
 		return glm::lookAt(position, position + front, up);
@@ -35,7 +40,7 @@ namespace gl {
 
 	void Camera::ProcessKeyboard(CameraMovementEnum direction, float deltaTime)
 	{
-		float velocity = MovementSpeed * deltaTime;
+		const float velocity = MovementSpeed * deltaTime * 10;
 		if (direction == CameraMovementEnum::FORWARD)
 			position += front * velocity;
 		if (direction == CameraMovementEnum::BACKWARD)
@@ -72,10 +77,10 @@ namespace gl {
 	void Camera::ProcessMouseScroll(float yoffset)
 	{
 		Zoom -= yoffset;
-		if (Zoom < 1.0f)
-			Zoom = 1.0f;
-		if (Zoom > 45.0f)
-			Zoom = 45.0f;
+		if (Zoom < aspect)
+			Zoom = aspect;
+		if (Zoom > fovY)
+			Zoom = fovY;
 	}
 
 	void Camera::updateCameraVectors()

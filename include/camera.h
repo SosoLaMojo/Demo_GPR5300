@@ -16,7 +16,7 @@ namespace gl {
 
 	// Default camera values
 	const float YAW = -90.0f;
-	const float PITCH = 0.0f;
+	const float PITCH = -25.0f;
 	const float SPEED = 2.5f;
 	const float SENSITIVITY = 0.1f;
 	const float ZOOM = 45.0f;
@@ -40,6 +40,9 @@ namespace gl {
 		float MouseSensitivity;
 		float Zoom;
 
+		float aspect = 1024.0f / 720.0f;
+		float fovY = 45.0f;
+
 		// constructor with vectors
 		Camera(
 			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -51,6 +54,9 @@ namespace gl {
 			float posX, float posY, float posZ,
 			float upX, float upY, float upZ,
 			float yaw, float pitch);
+
+		// function return FovX for Frustum Culling
+		float GetFovX() const;
 
 		// returns the view matrix calculated using Euler Angles and the LookAt
 		// Matrix

@@ -5,11 +5,11 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "engine.h"
 #include "camera.h"
-#include "error.h"
 #include "texture.h"
 #include "shader.h"
 #include "model.h"
@@ -18,8 +18,8 @@
 #include "planet.h"
 #include "framebuffer.h"
 
-//#include "Tracy.hpp"
-//#include "TracyOpenGL.hpp"
+#include "Tracy.hpp"
+#include "TracyOpenGL.hpp"
 
 namespace gl {
 
@@ -65,12 +65,12 @@ namespace gl {
 
 	void HelloScene::Init()
 	{
-		/*ZoneScoped;
-		TracyGpuZone("Check Init");*/
+		ZoneScoped;
+		TracyGpuZone("Check Init");
 		
 		SDL_GL_SetSwapInterval(0); // FPS
 		glEnable(GL_DEPTH_TEST);
-		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 30.0f, 50.0f)); // Camera position
+		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 2.0f, 7.0f)); // Camera position
 		frameBuffer_ = std::make_unique<FrameBuffer>(windowSize_);
 		std::string path = "../";
 		skybox_mesh_ = std::make_unique<ModelSkybox>(path, *camera_);
@@ -176,7 +176,7 @@ namespace gl {
 		projection_ = glm::perspective(glm::radians(45.0f),
 			windowSize_.x / windowSize_.y, // aspect ratio
 			0.1f,
-			200.f); // ligne d'horizon (jusqu'ou on voit au loin)
+			400.f); // ligne d'horizon (jusqu'ou on voit au loin)
 	}
 
 	// TODO go to class camera
@@ -201,13 +201,14 @@ namespace gl {
 
 	void HelloScene::Update(seconds dt)
 	{
-		/*ZoneScoped;
-		TracyGpuZone("Check Update");*/
+		ZoneScoped;
+		TracyGpuZone("Check Update");
 		// FrameBuffer
 		frameBuffer_->Bind();
 
 		delta_time_ = dt.count();
 		time_ += delta_time_;
+		camera_->position += -camera_->front * delta_time_;
 		SetViewMatrix(dt);
 		SetProjectionMatrix();
 		SetUniformMatrix();
@@ -230,13 +231,9 @@ namespace gl {
 				planets_[i].Update(dt, *shader_);
 			}
 		}
-		// for (Planet& planet : planets_)
-		// {
-		// 	planet.Update(dt, *shader_);
-		// }
 		
 		// Asteroids
-		asteroids_.Update(dt, *instanciedAsteroidShader_);
+		asteroids_.Update(dt, *instanciedAsteroidShader_, camera_.get());
 		
 		// Skybox
 		skybox_mesh_->Update();
@@ -248,9 +245,11 @@ namespace gl {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		frameBufferShader_->Use();
 		frameBufferShader_->SetInt("screenTexture", 0);
+		frameBufferShader_->SetInt("brightColor", 1);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
-		/*frameBuffer_->Update();*/
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer1());
 		frameBuffer_->Draw();
 	}
 
@@ -297,6 +296,8 @@ namespace gl {
 		}
 	}
 
+	// TODO create function delete
+	
 	void HelloScene::DrawImGui()
 	{
 	}

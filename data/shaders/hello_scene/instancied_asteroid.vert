@@ -17,8 +17,9 @@ uniform vec3 camera_position;
 void main()
 {
     mat4 inv_model = transpose(inverse(aInstanceMatrix));
+
     mat4 pvm = projection * view * aInstanceMatrix;
-    out_position = (view * aInstanceMatrix * vec4(aPos, 1.0)).xyz;
+    out_position = (aInstanceMatrix * vec4(aPos, 1.0)).xyz;
     gl_Position = pvm * vec4(aPos, 1.0);
     out_tex = aTex;
     out_normal = vec3(inv_model * vec4(aNormal, 1.0));

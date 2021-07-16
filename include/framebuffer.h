@@ -22,8 +22,8 @@ namespace gl {
 		FrameBuffer(glm::vec2 windowSize);
 		
 		unsigned int GetColorBuffer();
+		unsigned int GetColorBuffer1();
 		
-		/*void Update() const;*/
 		void Draw() const;
 		void Bind() const;
 		void UnBind() const;

@@ -1,4 +1,8 @@
 #include "instancied_asteroids.h"
+#include "camera.h"
+
+#include "Tracy.hpp"
+#include "TracyOpenGL.hpp"
 
 namespace gl {
 
@@ -73,8 +77,74 @@ namespace gl {
 		glBindVertexArray(0);
 	}
 	
-	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
+	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader, Camera* camera)
 	{
+		ZoneScoped;
+		TracyGpuZone("Check Update InstanciedAsteroid");
+		// Frustum Culling
+		std::vector<glm::mat4> asteroidCulled;
+		float nearPlane = 0.1f;
+		float farPlane = 400.0f;
+		const float radius = 0.3f;
+		const auto cameraDir = camera->front;
+		const auto cameraRightDir = camera->right;
+		const auto cameraUp = camera->up;
+		const auto fovX = glm::radians(camera->GetFovX()); // / 2 pour réduire le frustum
+		const auto fovY = glm::radians(camera->fovY); // / 2 pour réduire le frustum
+
+		const auto leftQuaternion = glm::angleAxis(fovX / 2.0f, cameraUp);
+		const auto leftNormal = leftQuaternion * -cameraRightDir;
+		const auto rightQuaternion = glm::angleAxis(-fovX / 2.0f, cameraUp);
+		const auto rightNormal = rightQuaternion * cameraRightDir;
+		const auto topQuaternion = glm::angleAxis(fovY / 2.0f, cameraRightDir);
+		const auto topNormal = topQuaternion * cameraUp;
+		const auto bottomQuaternion = glm::angleAxis(-fovY / 2.0f, cameraRightDir);
+		const auto bottomNormal = bottomQuaternion * -cameraUp;
+
+		for(auto i = 0; i < nbAsteroids_; i++)
+		{
+			glm::vec3 asteroidWorldPos = modelMatrix_[i][3];
+			const auto asteroidCameraPos = asteroidWorldPos - camera->position;
+
+			// Near and Far
+			//const auto planePos = camera->position + cameraDir * nearPlane;
+			const auto v1 = glm::dot(cameraDir, asteroidCameraPos);
+			if(v1 < radius + nearPlane || v1 > farPlane)
+			{
+				continue;
+			}
+
+			// Left
+			const auto v2 = glm::dot(leftNormal, asteroidCameraPos);
+			if(v2 > radius)
+			{
+				continue;
+			}
+
+			// Right
+			const auto v3 = glm::dot(rightNormal, asteroidCameraPos);
+			if (v3 > radius)
+			{
+				continue;
+			}
+
+			// Top
+			const auto v4 = glm::dot(topNormal, asteroidCameraPos);
+			if (v4 > radius)
+			{
+				continue;
+			}
+
+			// Bottom
+			const auto v5 = glm::dot(bottomNormal, asteroidCameraPos);
+			if (v5 > radius)
+			{
+				continue;
+			}
+
+			asteroidCulled.push_back(modelMatrix_[i]);
+		}
+		
 		shader.Use();
 		shader.SetInt("TexDiffuse", 0);
 		shader.SetInt("TexNormal", 1);
@@ -94,18 +164,22 @@ namespace gl {
 		shader.SetFloat("specular_pow", material.specular_pow);
 		shader.SetVec3("specular_vec", material.specular_vec);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceVBO_);
-		glBufferData(GL_ARRAY_BUFFER,
-			sizeof(glm::mat4) * modelMatrix_.size(),
-			&modelMatrix_[0],
-			GL_DYNAMIC_DRAW);
+		if(asteroidCulled.size() > 0)
+		{
+			glBufferData(GL_ARRAY_BUFFER,
+				sizeof(glm::mat4) * asteroidCulled.size(),
+				&asteroidCulled[0],
+				GL_DYNAMIC_DRAW);
+		}
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(mesh.GetVao());
 		glDrawElementsInstanced(GL_TRIANGLES,
 			mesh.nb_vertices,
 			GL_UNSIGNED_INT, 
 			0,
-			modelMatrix_.size());
+			asteroidCulled.size());
 		glBindVertexArray(0);
+
 	}
 
 	void InstanciedAsteroid::SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned i)

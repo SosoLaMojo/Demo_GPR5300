@@ -14,7 +14,7 @@ uniform vec3 specular_vec;
 
 const float ambientStrength = 0.1;
 const vec3 lightColor = vec3(1.0, 1.0, 1.0);
-const vec3 lightPos = vec3(0.0, 0.0, 3.0);
+const vec3 lightPos = vec3(0.0, 0.0, 0.0);
 
 void main()
 {
@@ -37,5 +37,5 @@ void main()
      // Total light
      vec3 result_specular = specular_tex * texture(Specular, out_tex).r;
      FragColor = vec4(result_diffuse_ambient + result_specular, 1.0);
-     FragColor = vec4(texture(Diffuse, out_tex).rgb, 1.0);
+     //FragColor = vec4(texture(Diffuse, out_tex).rgb, 1.0);
 }
