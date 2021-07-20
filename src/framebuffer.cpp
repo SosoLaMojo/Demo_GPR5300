@@ -21,7 +21,6 @@ namespace gl {
 		glGenFramebuffers(1, &FBO_);
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO_);
 
-		// TODO create for --------------------------------------------------------------
 		// Generate texture
 		glGenTextures(1, &texColorBuffer_);
 		glBindTexture(GL_TEXTURE_2D, texColorBuffer_);
@@ -40,7 +39,6 @@ namespace gl {
 
 		std::vector<unsigned int> attachement = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 		glDrawBuffers(2, attachement.data());
-		// ------------------------------------------------------------------------------
 		
 		// RBO
 		glGenRenderbuffers(1, &RBO_);
@@ -85,16 +83,6 @@ namespace gl {
 	{
 		return texColorBufferBloom_;
 	}
-
-	/*void FrameBuffer::Update() const
-	{
-		frameBuffer_->UnBind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		frameBufferShader_->Use();
-		frameBufferShader_->SetInt("screenTexture", 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, frameBuffer_->GetColorBuffer());
-	}*/
 
 	void FrameBuffer::Draw() const
 	{

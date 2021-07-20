@@ -16,10 +16,9 @@ namespace gl {
 	{
 	public:
 		InstanciedAsteroid();
-
-		// TODO passer par reference pour les vec3 12bit -> 8bit and string + edit name transvec -> ceinture asteroids1 et 2
-		InstanciedAsteroid(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis,
-		                   glm::vec3 transVec, glm::vec3 transVec2, float spinSpeedFactor, unsigned int nbAsteroids,
+		
+		InstanciedAsteroid(std::string filepath, float rotationSpeedFactor, const glm::vec3& spinRotationAxis,
+		                   const glm::vec3& transVec, const glm::vec3& transVec2, float spinSpeedFactor, unsigned int nbAsteroids,
 		                   float thicknessAsteroidsX, float thicknessAsteroidsY, float maxSizeAsteroid,
 		                   float maxSpeedSpinAsteroid);
 		
@@ -28,12 +27,10 @@ namespace gl {
 		void SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned int i);
 
 		glm::vec3 GetPosition(unsigned int i);
-
-		//AsteroidTransfom GetTransform(unsigned int i);
+		
 
 	private:
-
-		// TODO edit names
+		
 		float time_ = 0.0f;
 		float delta_time_ = 0.0f;
 		float spinSpeedFactor_ = 1.0f; // speed spin
@@ -44,6 +41,10 @@ namespace gl {
 		float maxSpeedSpinAsteroid_;
 		int densityAsteroids_ = 1000;
 		unsigned int instanceVBO_;
+		inline static const float nearPlane_ = 0.1f;
+		inline static const float farPlane_ = 400.0f;
+		inline static const float radius_ = 0.3f;
+		
 		std::unique_ptr<Model> model_ = nullptr;
 
 		glm::vec3 transVec_ = glm::vec3(0.0f, 0.0f, 0.0f); // transVec movement planet World
@@ -56,6 +57,8 @@ namespace gl {
 		std::vector<float> initTransDistanceY_;
 		std::vector<float> initTransScale_;
 		std::vector<float> initTransSpeedSpinRotate_;
+
+		std::vector<glm::mat4> asteroidCulled_;
 	};
 	
 } // namespace gl

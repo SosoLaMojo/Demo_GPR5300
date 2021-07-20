@@ -148,5 +148,4 @@ namespace gl {
 		glDrawArrays(GL_TRIANGLES, 0, nbTriangles_);
 	}
 	
-	
 } // namespace gl.

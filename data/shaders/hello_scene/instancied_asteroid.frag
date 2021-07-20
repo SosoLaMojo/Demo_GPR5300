@@ -1,6 +1,7 @@
 #version 330 core
 
 layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 BrightColor;
 
 in vec3 out_position;
 in vec3 out_normal;
@@ -37,5 +38,5 @@ void main()
      // Total light
      vec3 result_specular = specular_tex * texture(Specular, out_tex).r;
      FragColor = vec4(result_diffuse_ambient + result_specular, 1.0);
-     //FragColor = vec4(texture(Diffuse, out_tex).rgb, 1.0);
+     BrightColor = vec4(0.0);
 }

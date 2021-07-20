@@ -12,9 +12,8 @@ namespace gl {
 	{
 	public:
 		Planet();
-
-		// TODO passer par reference pour les vec3 12bit -> 8bit + string
-		Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis, glm::vec3 transVec,
+		
+		Planet(std::string filepath, float rotationSpeedFactor, const glm::vec3& spinRotationAxis, const glm::vec3& transVec,
 			float spinSpeedFactor);
 
 		void Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader);

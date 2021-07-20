@@ -70,14 +70,13 @@ namespace gl {
 		
 		SDL_GL_SetSwapInterval(0); // FPS
 		glEnable(GL_DEPTH_TEST);
-		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 2.0f, 7.0f)); // Camera position
+		camera_ = std::make_unique<Camera>(glm::vec3(.0f, 2.0f, 7.0f)); // Camera position // y 35, z 90
 		frameBuffer_ = std::make_unique<FrameBuffer>(windowSize_);
 		std::string path = "../";
 		skybox_mesh_ = std::make_unique<ModelSkybox>(path, *camera_);
 
 		planets_.reserve(9);
 		
-		// TODO calculate rotate speed and position for each planets + axis rotation sun
 		//Planets
 		//index 0
 		planets_.emplace_back(Planet(path + "data/models/sun.obj",
@@ -163,14 +162,12 @@ namespace gl {
 			path + "data/shaders/hello_scene/sun.vert",
 			path + "data/shaders/hello_scene/sun.frag");
 	}
-
-	// TODO go to class camera
+	
 	void HelloScene::SetViewMatrix(seconds dt)
 	{
 		view_ = camera_->GetViewMatrix();
 	}
-
-	// TODO go to class camera
+	
 	void HelloScene::SetProjectionMatrix()
 	{
 		projection_ = glm::perspective(glm::radians(45.0f),
@@ -178,8 +175,7 @@ namespace gl {
 			0.1f,
 			400.f); // ligne d'horizon (jusqu'ou on voit au loin)
 	}
-
-	// TODO go to class camera
+	
 	void HelloScene::SetUniformMatrix() const
 	{
 		shader_->Use();
@@ -208,7 +204,8 @@ namespace gl {
 
 		delta_time_ = dt.count();
 		time_ += delta_time_;
-		camera_->position += -camera_->front * delta_time_;
+		float speed = 2.0f;
+		camera_->position += glm::normalize(-camera_->front) * delta_time_ * speed;
 		SetViewMatrix(dt);
 		SetProjectionMatrix();
 		SetUniformMatrix();
@@ -239,7 +236,6 @@ namespace gl {
 		skybox_mesh_->Update();
 		skybox_mesh_->Draw();
 		
-		// TODO create function update in class framebuffer and call here
 		// framebuffer
 		frameBuffer_->UnBind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -265,12 +261,14 @@ namespace gl {
 			windowSize_ = glm::vec2(event.window.data1, event.window.data2);
 			frameBuffer_ = std::make_unique<FrameBuffer>(windowSize_);
 		}
+		
+		// Manually moving camera
 		if (event.type == SDL_MOUSEMOTION)
 		{
 			const auto mouseState = SDL_GetMouseState(nullptr, nullptr);
 			if (mouseState & SDL_BUTTON(3))
 			{
-				camera_->ProcessMouseMovement(event.motion.xrel, event.motion.yrel, true);
+				//camera_->ProcessMouseMovement(event.motion.xrel, event.motion.yrel, true);
 			}
 		}
 		if (event.type == SDL_KEYDOWN)
@@ -279,24 +277,22 @@ namespace gl {
 				exit(0);
 			if (event.key.keysym.sym == SDLK_w)
 			{
-				camera_->ProcessKeyboard(CameraMovementEnum::FORWARD, delta_time_);
+				//camera_->ProcessKeyboard(CameraMovementEnum::FORWARD, delta_time_);
 			}
 			if (event.key.keysym.sym == SDLK_s)
 			{
-				camera_->ProcessKeyboard(CameraMovementEnum::BACKWARD, delta_time_);
+				//camera_->ProcessKeyboard(CameraMovementEnum::BACKWARD, delta_time_);
 			}
 			if (event.key.keysym.sym == SDLK_a)
 			{
-				camera_->ProcessKeyboard(CameraMovementEnum::LEFT, delta_time_);
+				//camera_->ProcessKeyboard(CameraMovementEnum::LEFT, delta_time_);
 			}
 			if (event.key.keysym.sym == SDLK_d)
 			{
-				camera_->ProcessKeyboard(CameraMovementEnum::RIGHT, delta_time_);
+				//camera_->ProcessKeyboard(CameraMovementEnum::RIGHT, delta_time_);
 			}
 		}
 	}
-
-	// TODO create function delete
 	
 	void HelloScene::DrawImGui()
 	{

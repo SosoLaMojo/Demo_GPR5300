@@ -9,7 +9,7 @@ namespace gl {
 	InstanciedAsteroid::InstanciedAsteroid() {}
 
 	InstanciedAsteroid::InstanciedAsteroid(std::string filepath, float rotationSpeedFactor,
-		glm::vec3 spinRotationAxis, glm::vec3 transVec, glm::vec3 transVec2,
+		const glm::vec3& spinRotationAxis, const glm::vec3& transVec, const glm::vec3& transVec2,
 		float spinSpeedFactor,
 		unsigned nbAsteroids, float thicknessAsteroidsX,
 		float thicknessAsteroidsY, float maxSizeAsteroid,
@@ -25,6 +25,8 @@ namespace gl {
 		maxSizeAsteroid_(maxSizeAsteroid),
 		maxSpeedSpinAsteroid_(maxSpeedSpinAsteroid)
 	{
+		asteroidCulled_.resize(nbAsteroids_);
+		
 		initTransDistanceX_.resize(nbAsteroids_);
 		std::generate(initTransDistanceX_.begin(), initTransDistanceX_.end(), [&]()
 			{
@@ -80,12 +82,14 @@ namespace gl {
 	void InstanciedAsteroid::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader, Camera* camera)
 	{
 		ZoneScoped;
-		TracyGpuZone("Check Update InstanciedAsteroid");
+		TracyGpuZone("Check Update InstanciedAsteroid with frustum culling");
+		
 		// Frustum Culling
-		std::vector<glm::mat4> asteroidCulled;
-		float nearPlane = 0.1f;
-		float farPlane = 400.0f;
-		const float radius = 0.3f;
+		// Backface Culling
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK || GL_FRONT);
+		glFrontFace(GL_CCW || GL_CW);
+		
 		const auto cameraDir = camera->front;
 		const auto cameraRightDir = camera->right;
 		const auto cameraUp = camera->up;
@@ -101,48 +105,50 @@ namespace gl {
 		const auto bottomQuaternion = glm::angleAxis(-fovY / 2.0f, cameraRightDir);
 		const auto bottomNormal = bottomQuaternion * -cameraUp;
 
+		size_t nbAsteroidsToDraw = 0;
+		
 		for(auto i = 0; i < nbAsteroids_; i++)
 		{
 			glm::vec3 asteroidWorldPos = modelMatrix_[i][3];
 			const auto asteroidCameraPos = asteroidWorldPos - camera->position;
 
 			// Near and Far
-			//const auto planePos = camera->position + cameraDir * nearPlane;
 			const auto v1 = glm::dot(cameraDir, asteroidCameraPos);
-			if(v1 < radius + nearPlane || v1 > farPlane)
+			if(v1 < radius_ + nearPlane_ || v1 > farPlane_)
 			{
 				continue;
 			}
 
 			// Left
 			const auto v2 = glm::dot(leftNormal, asteroidCameraPos);
-			if(v2 > radius)
+			if(v2 > radius_)
 			{
 				continue;
 			}
 
 			// Right
 			const auto v3 = glm::dot(rightNormal, asteroidCameraPos);
-			if (v3 > radius)
+			if (v3 > radius_)
 			{
 				continue;
 			}
 
 			// Top
 			const auto v4 = glm::dot(topNormal, asteroidCameraPos);
-			if (v4 > radius)
+			if (v4 > radius_)
 			{
 				continue;
 			}
 
 			// Bottom
 			const auto v5 = glm::dot(bottomNormal, asteroidCameraPos);
-			if (v5 > radius)
+			if (v5 > radius_)
 			{
 				continue;
 			}
 
-			asteroidCulled.push_back(modelMatrix_[i]);
+			asteroidCulled_[nbAsteroidsToDraw] = modelMatrix_[i];
+			nbAsteroidsToDraw++;
 		}
 		
 		shader.Use();
@@ -164,11 +170,11 @@ namespace gl {
 		shader.SetFloat("specular_pow", material.specular_pow);
 		shader.SetVec3("specular_vec", material.specular_vec);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceVBO_);
-		if(asteroidCulled.size() > 0)
+		if(nbAsteroidsToDraw > 0)
 		{
 			glBufferData(GL_ARRAY_BUFFER,
-				sizeof(glm::mat4) * asteroidCulled.size(),
-				&asteroidCulled[0],
+				sizeof(glm::mat4) * nbAsteroidsToDraw,
+				&asteroidCulled_[0],
 				GL_DYNAMIC_DRAW);
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -177,9 +183,8 @@ namespace gl {
 			mesh.nb_vertices,
 			GL_UNSIGNED_INT, 
 			0,
-			asteroidCulled.size());
+			nbAsteroidsToDraw);
 		glBindVertexArray(0);
-
 	}
 
 	void InstanciedAsteroid::SetModelMatrix(std::chrono::duration<float, std::ratio<1, 1>> dt, unsigned i)
@@ -187,7 +192,7 @@ namespace gl {
 		modelMatrix_[i] = glm::mat4(1.0f);
 		// rotate around specific point
 		modelMatrix_[i] = glm::rotate(modelMatrix_[i], (time_ + i) * rotationSpeedFactor_, glm::vec3(0.0f, 1.0f, 0.0f));
-		if (i < nbAsteroids_ / 2)
+		if (i < nbAsteroids_ / 2.0f)
 		{
 			modelMatrix_[i] = glm::translate(modelMatrix_[i],
 				transVec_ + glm::vec3(initTransDistanceX_[i], initTransDistanceY_[i],
@@ -215,22 +220,5 @@ namespace gl {
 
 		return translation;
 	}
-
-	/*InstanciedAsteroid::AsteroidTransfom InstanciedAsteroid::GetTransform(unsigned i)
-	{
-		glm::vec3 scale;
-		glm::quat rotation;
-		glm::vec3 translation;
-		glm::vec3 skew;
-		glm::vec4 perspective;
-		glm::decompose(modelMatrix_[i], scale, rotation, translation, skew, perspective);
-
-		AsteroidTransfom result;
-		result.translation = translation;
-		result.scale = scale;
-		result.rotation = rotation;
-
-		return result;
-	}*/
 	
 } // namespace gl

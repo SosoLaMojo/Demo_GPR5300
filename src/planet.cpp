@@ -4,8 +4,8 @@ namespace gl {
 
 	Planet::Planet() {}
 
-	Planet::Planet(std::string filepath, float rotationSpeedFactor, glm::vec3 spinRotationAxis,
-		glm::vec3 transVec, float spinSpeedFactor) :
+	Planet::Planet(std::string filepath, float rotationSpeedFactor, const glm::vec3& spinRotationAxis,
+		const glm::vec3& transVec, float spinSpeedFactor) :
 		rotationSpeedFactor_(rotationSpeedFactor),
 		spinRotationAxis_(spinRotationAxis),
 		transVec_(transVec),
@@ -16,6 +16,10 @@ namespace gl {
 
 	void Planet::Update(std::chrono::duration<float, std::ratio<1, 1>> dt, Shader& shader)
 	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK || GL_FRONT);
+		glFrontFace(GL_CCW || GL_CW);
+		
 		SetModelMatrix(dt);
 
 		shader.SetMat4("inv_model", invModelMatrix_);
